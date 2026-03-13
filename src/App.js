@@ -238,74 +238,46 @@ export default function ROICalculator() {
       outlook: "Post-hype correction ongoing in 2026. Recovery expected by 2027-28 as affordability attracts new buyers. High yield compensates patient investors." },
   ];
 
-  const nextUp = [
-    {
-      name: "Almada",
-      phase: "Early Entry",
-      score: 92,
-      price: 2800,
-      yieldPct: 7.1,
-      growth: 18.2,
+  // Merged + sorted combined market data (lisbonData + emerging areas), sorted by avg5yr desc
+  const allAreas = [
+    ...lisbonData,
+    { name: "Almada",    growth: 18.2, price: 2800, yieldPct: 7.1, tag: "Emerging",
+      forecast: [20.0, 16.0, 13.0, 11.0, 9.0], avg5yr: 13.8,
+      outlook: "Metro expansion and Costa da Caparica beach access driving demand. Central Lisbon spillover as prices hit EUR 6k/m2.",
       catalyst: "Metro expansion + Costa da Caparica beach access. Central Lisbon spillover as prices hit EUR 6k/m2. Riverfront regeneration underway.",
       signal: ["Metro line extension confirmed", "Young professional inflow", "Lisbon ferry commuters relocating"],
-      risk: "Low",
-    },
-    {
-      name: "Moita",
-      phase: "Pre-Emergence",
-      score: 87,
-      price: 1900,
-      yieldPct: 8.2,
-      growth: 12.4,
-      catalyst: "Last truly affordable riverside municipality. Developer interest confirmed. Follows exact trajectory Barreiro followed 3 years prior.",
-      signal: ["New residential development pipeline", "Institutional investor activity", "Infrastructure upgrades in progress"],
-      risk: "Moderate",
-    },
-    {
-      name: "Barreiro",
-      phase: "Rising",
-      score: 84,
-      price: 2200,
-      yieldPct: 7.6,
-      growth: 15.1,
-      catalyst: "Setubal Peninsula led national growth at +22.6% in 2025. Barreiro benefits from same dynamics with lower entry prices than Almada.",
+      risk: "Low", phase: "Early Entry", score: 92 },
+    { name: "Barreiro",  growth: 15.1, price: 2200, yieldPct: 7.6, tag: "Emerging",
+      forecast: [16.0, 13.5, 11.0, 9.5, 8.0], avg5yr: 11.6,
+      outlook: "Setubal Peninsula led national growth at +22.6% in 2025. Barreiro benefits from same dynamics with lower entry prices.",
+      catalyst: "Setubal Peninsula led national growth at +22.6% in 2025. Lower entry prices than Almada. Waterfront regeneration.",
       signal: ["22.6% peninsula-wide growth in 2025", "Ferry link to Lisbon", "Regeneration of industrial waterfront"],
-      risk: "Low",
-    },
-    {
-      name: "Arroios",
-      phase: "Early Rising",
-      score: 79,
-      price: 4500,
-      yieldPct: 5.8,
-      growth: 11.3,
-      catalyst: "Inside Lisbon city limits with still-affordable prices. Young international community forming. Mirrors Intendente trajectory from 2019-2022.",
+      risk: "Low", phase: "Rising", score: 84 },
+    { name: "Moita",     growth: 12.4, price: 1900, yieldPct: 8.2, tag: "Emerging",
+      forecast: [14.0, 12.0, 10.5, 9.0, 8.0], avg5yr: 10.7,
+      outlook: "Last truly affordable riverside municipality. Follows exact trajectory Barreiro followed 3 years prior.",
+      catalyst: "Last truly affordable riverside municipality. Developer interest confirmed. Follows Barreiro trajectory.",
+      signal: ["New residential development pipeline", "Institutional investor activity", "Infrastructure upgrades in progress"],
+      risk: "Moderate", phase: "Pre-Emergence", score: 87 },
+    { name: "Arroios",   growth: 11.3, price: 4500, yieldPct: 5.8, tag: "Rising",
+      forecast: [11.0, 10.0, 9.0, 8.5, 8.0], avg5yr: 9.3,
+      outlook: "Inside city limits with affordable prices. Young international community forming. Mirrors Intendente trajectory from 2019-2022.",
+      catalyst: "Inside Lisbon city limits with still-affordable prices. Young international community forming.",
       signal: ["New co-working hubs opening", "Cafe and restaurant scene emerging", "Artist and expat community growing"],
-      risk: "Low",
-    },
-    {
-      name: "Olivais",
-      phase: "Pre-Emergence",
-      score: 76,
-      price: 3200,
-      yieldPct: 6.4,
-      growth: 8.7,
-      catalyst: "Adjacent to Beato and Parque das Nacoes. Benefits from Beato tech hub spillover. Underpriced relative to neighbours.",
+      risk: "Low", phase: "Early Rising", score: 79 },
+    { name: "Olivais",   growth: 8.7,  price: 3200, yieldPct: 6.4, tag: "Rising",
+      forecast: [10.0, 9.0, 8.0, 7.5, 7.0], avg5yr: 8.3,
+      outlook: "Adjacent to Beato and Parque das Nacoes. Benefits from Beato tech hub spillover. Underpriced relative to neighbours.",
+      catalyst: "Adjacent to Beato and Parque das Nacoes. Benefits from Beato tech hub spillover.",
       signal: ["Proximity to Beato tech corridor", "Metro Red Line access", "Price gap vs Parque das Nacoes narrowing"],
-      risk: "Moderate",
-    },
-    {
-      name: "Alcochete",
-      phase: "Watch List",
-      score: 71,
-      price: 2100,
-      yieldPct: 7.8,
-      growth: 9.3,
-      catalyst: "New international school attracting expat families. Road improvements and Montijo airport proximity creating demand. Still early stage.",
+      risk: "Moderate", phase: "Pre-Emergence", score: 76 },
+    { name: "Alcochete", growth: 9.3,  price: 2100, yieldPct: 7.8, tag: "Watch",
+      forecast: [9.0, 8.5, 8.0, 7.5, 7.0], avg5yr: 8.0,
+      outlook: "New international school attracting expat families. Montijo airport proximity creating demand. Still early stage.",
+      catalyst: "New international school attracting expat families. Road improvements and Montijo airport proximity.",
       signal: ["New international school opened", "Montijo airport proximity", "Improved road connections A2/A12"],
-      risk: "Moderate",
-    },
-  ];
+      risk: "Moderate", phase: "Watch List", score: 71 },
+  ].sort((a, b) => b.avg5yr - a.avg5yr);
 
   const rows = [
     { label: "Rental Income", value: rent, positive: true },
@@ -344,27 +316,25 @@ export default function ROICalculator() {
           </p>
         </div>
 
-        {/* Row 1: Market Research Tabs */}
+        {/* Row 1: Market Research Tab */}
         <div style={{ display: "flex", borderBottom: "1px solid " + C.border, marginBottom: "16px" }}>
-          {["markets", "next up"].map((t) => (
-            <button
-              key={t} onClick={() => setTab(t)}
-              style={{
-                flex: 1, padding: "10px 0",
-                border: "none", background: "transparent",
-                cursor: "pointer", fontSize: "10px",
-                fontWeight: tab === t ? "500" : "400",
-                textTransform: "uppercase", letterSpacing: "0.12em",
-                fontFamily: "Jost, sans-serif",
-                color: tab === t ? C.accent : C.textSub,
-                borderBottom: tab === t ? "2px solid " + C.accent : "2px solid transparent",
-                marginBottom: "-1px",
-                transition: "all 0.2s",
-              }}
-            >
-              {t}
-            </button>
-          ))}
+          <button
+            onClick={() => setTab("markets")}
+            style={{
+              flex: 1, padding: "10px 0",
+              border: "none", background: "transparent",
+              cursor: "pointer", fontSize: "10px",
+              fontWeight: tab === "markets" ? "500" : "400",
+              textTransform: "uppercase", letterSpacing: "0.12em",
+              fontFamily: "Jost, sans-serif",
+              color: tab === "markets" ? C.accent : C.textSub,
+              borderBottom: tab === "markets" ? "2px solid " + C.accent : "2px solid transparent",
+              marginBottom: "-1px",
+              transition: "all 0.2s",
+            }}
+          >
+            Markets
+          </button>
         </div>
 
         {/* Row 2: Deal Analysis Tabs — always visible */}
@@ -391,7 +361,7 @@ export default function ROICalculator() {
         </div>
 
         {/* Score Gauge — only shown for deal analysis tabs */}
-        {tab !== "markets" && tab !== "next up" && (
+        {tab !== "markets" && (
           <div style={{ background: C.surface, border: "1px solid " + C.border, borderRadius: "4px", padding: "20px", marginBottom: "12px" }}>
             <div style={{ fontSize: "9px", color: C.textMuted, letterSpacing: "0.16em", textTransform: "uppercase", textAlign: "center", marginBottom: "2px", fontWeight: "500" }}>
               Investment Score
@@ -530,50 +500,185 @@ export default function ROICalculator() {
         )}
 
         {/* Markets Tab */}
-        {tab === "markets" && (
+        {tab === "markets" && (() => {
+          // Chart constants — defined once, used in both chart and list
+          const xMin = 2, xMax = 15, yMin = 3, yMax = 9;
+          const pL = 36, pR = 308, pT = 12, pB = 162;
+          const pW = pR - pL, pH = pB - pT;
+          const cx = v => pL + (v - xMin) / (xMax - xMin) * pW;
+          const cy = v => pB - (v - yMin) / (yMax - yMin) * pH;
+          const xMidVal = 8, yMidVal = 6;
+          const dotColor = n => n.avg5yr >= 10 ? "#4a7059" : n.avg5yr >= 7 ? "#9e7c4a" : n.avg5yr >= 5 ? "#7a8a9a" : "#904a38";
+
+          // Label offsets [dx, dy] tuned per area to avoid collisions
+          const labelOffsets = {
+            "Almada":            [6, -8],
+            "Barreiro":          [6, 8],
+            "Moita":             [-4, -9],
+            "Beato":             [6, -8],
+            "Campo de Ourique":  [-6, 9],
+            "Arroios":           [6, 5],
+            "Alcantara":         [-6, 9],
+            "Olivais":           [6, -8],
+            "Alcochete":         [-6, -9],
+            "Parque das Nacoes": [6, 8],
+            "Estrela":           [-6, -9],
+            "Santo Antonio":     [-4, 9],
+            "Marvila":           [-6, -9],
+            "Misericordia":      [6, 8],
+            "Avenidas Novas":    [-6, 9],
+            "Chiado":            [6, -8],
+          };
+
+          return (
           <div style={{ marginBottom: "16px" }}>
+
+            {/* Opportunity Matrix Chart */}
+            <div style={{ background: C.surface, border: "1px solid " + C.border, borderRadius: "4px", padding: "16px 18px", marginBottom: "12px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "14px" }}>
+                <div>
+                  <div style={{ fontSize: "9px", color: C.textMuted, letterSpacing: "0.16em", textTransform: "uppercase", fontWeight: "500", marginBottom: "3px" }}>
+                    Opportunity Matrix
+                  </div>
+                  <div style={{ fontSize: "10px", color: C.textSub, fontWeight: "300" }}>Gross yield vs. 5yr growth forecast</div>
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: "3px", alignItems: "flex-end" }}>
+                  {[["#4a7059","High growth"], ["#9e7c4a","Mid growth"], ["#7a8a9a","Low growth"], ["#904a38","Slow"]].map(([col, lbl]) => (
+                    <div key={lbl} style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+                      <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: col }} />
+                      <span style={{ fontSize: "8px", color: C.textMuted, fontWeight: "300" }}>{lbl}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <svg viewBox="0 0 320 178" style={{ width: "100%", fontFamily: "Jost, sans-serif", overflow: "visible" }}>
+                {/* Quadrant fills */}
+                <rect x={cx(xMidVal)} y={pT} width={pR - cx(xMidVal)} height={cy(yMidVal) - pT} fill="#f0f4f0" opacity="0.7" />
+                <rect x={pL} y={cy(yMidVal)} width={cx(xMidVal) - pL} height={pB - cy(yMidVal)} fill="#f7f4f0" opacity="0.7" />
+                <rect x={cx(xMidVal)} y={cy(yMidVal)} width={pR - cx(xMidVal)} height={pB - cy(yMidVal)} fill="#fdf6ee" opacity="0.7" />
+                <rect x={pL} y={pT} width={cx(xMidVal) - pL} height={cy(yMidVal) - pT} fill="#f5f2f0" opacity="0.4" />
+
+                {/* Quadrant dividers */}
+                <line x1={cx(xMidVal)} y1={pT} x2={cx(xMidVal)} y2={pB} stroke="#d8cfc6" strokeWidth="1" strokeDasharray="3 3" />
+                <line x1={pL} y1={cy(yMidVal)} x2={pR} y2={cy(yMidVal)} stroke="#d8cfc6" strokeWidth="1" strokeDasharray="3 3" />
+
+                {/* Axes */}
+                <line x1={pL} y1={pB} x2={pR} y2={pB} stroke="#c8bfb6" strokeWidth="1" />
+                <line x1={pL} y1={pT} x2={pL} y2={pB} stroke="#c8bfb6" strokeWidth="1" />
+
+                {/* X axis ticks */}
+                {[4, 6, 8, 10, 12, 14].map(v => (
+                  <g key={v}>
+                    <line x1={cx(v)} y1={pB} x2={cx(v)} y2={pB + 3} stroke="#b8b0a8" strokeWidth="0.8" />
+                    <text x={cx(v)} y={pB + 9} textAnchor="middle" fontSize="7" fill="#a09890" fontFamily="Jost, sans-serif">{v + "%"}</text>
+                  </g>
+                ))}
+
+                {/* Y axis ticks */}
+                {[4, 5, 6, 7, 8].map(v => (
+                  <g key={v}>
+                    <line x1={pL - 3} y1={cy(v)} x2={pL} y2={cy(v)} stroke="#b8b0a8" strokeWidth="0.8" />
+                    <text x={pL - 5} y={cy(v) + 2.5} textAnchor="end" fontSize="7" fill="#a09890" fontFamily="Jost, sans-serif">{v + "%"}</text>
+                  </g>
+                ))}
+
+                {/* Axis labels */}
+                <text x={(pL + pR) / 2} y={pB + 19} textAnchor="middle" fontSize="7.5" fill="#9e7c4a" fontFamily="Jost, sans-serif" letterSpacing="0.1em" fontWeight="500">5-YEAR GROWTH FORECAST</text>
+                <text transform={"rotate(-90," + (pL - 22) + "," + ((pT + pB) / 2) + ")"} x={pL - 22} y={(pT + pB) / 2 + 2.5} textAnchor="middle" fontSize="7.5" fill="#9e7c4a" fontFamily="Jost, sans-serif" letterSpacing="0.1em" fontWeight="500">GROSS YIELD</text>
+
+                {/* Quadrant labels */}
+                <text x={cx(xMidVal) + 6} y={pT + 8} fontSize="7" fill="#4a7059" fontFamily="Jost, sans-serif" fontWeight="500" letterSpacing="0.08em">SWEET SPOT</text>
+                <text x={pL + 4} y={pT + 8} fontSize="7" fill="#7a8a9a" fontFamily="Jost, sans-serif" fontWeight="400" letterSpacing="0.08em">INCOME</text>
+                <text x={cx(xMidVal) + 6} y={pB - 4} fontSize="7" fill="#9e7c4a" fontFamily="Jost, sans-serif" fontWeight="400" letterSpacing="0.08em">GROWTH</text>
+                <text x={pL + 4} y={pB - 4} fontSize="7" fill="#a09890" fontFamily="Jost, sans-serif" fontWeight="400" letterSpacing="0.08em">MATURE</text>
+
+                {/* Dots + labels */}
+                {allAreas.map(n => {
+                  const x = cx(n.avg5yr), y = cy(n.yieldPct);
+                  const col = dotColor(n);
+                  const isSelected = selectedArea && selectedArea.name === n.name;
+                  const r = isSelected ? 6.5 : 5;
+                  const off = labelOffsets[n.name] || [6, -8];
+                  const shortName = n.name.length > 9 ? n.name.split(" ")[0] : n.name;
+                  return (
+                    <g key={n.name} onClick={() => { setSelectedArea(n); setAppreciation(parseFloat(n.avg5yr.toFixed(1))); }} style={{ cursor: "pointer" }}>
+                      {isSelected && <circle cx={x} cy={y} r={r + 4} fill="none" stroke={col} strokeWidth="1.2" opacity="0.4" />}
+                      <circle cx={x} cy={y} r={r} fill={col} opacity={isSelected ? 1 : 0.75} stroke={isSelected ? col : "none"} strokeWidth="1.5" />
+                      <text
+                        x={x + off[0]} y={y + off[1]}
+                        fontSize="7" fill={isSelected ? col : "#6a6260"}
+                        fontFamily="Jost, sans-serif" fontWeight={isSelected ? "500" : "300"}
+                        textAnchor={off[0] < 0 ? "end" : "start"}
+                      >
+                        {shortName}
+                      </text>
+                    </g>
+                  );
+                })}
+              </svg>
+
+              {/* Legend note */}
+              <div style={{ display: "flex", justifyContent: "space-between", marginTop: "8px", paddingTop: "8px", borderTop: "1px solid " + C.divider }}>
+                <span style={{ fontSize: "8.5px", color: C.textMuted, fontWeight: "300" }}>Tap any dot to apply to calculator</span>
+                <span style={{ fontSize: "8.5px", color: C.textMuted, fontWeight: "300" }}>5yr avg %/yr</span>
+              </div>
+            </div>
+
+            {/* Detailed list */}
             <div style={{ background: C.surface, border: "1px solid " + C.border, borderRadius: "4px", padding: "20px 22px", marginBottom: "12px" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "4px" }}>
                 <div style={{ fontSize: "9px", color: C.textMuted, letterSpacing: "0.16em", textTransform: "uppercase", fontWeight: "500" }}>
-                  Lisbon Neighbourhoods
+                  Lisbon — All Areas
                 </div>
                 <div style={{ fontSize: "9px", color: C.textMuted, letterSpacing: "0.08em", fontWeight: "300" }}>
-                  YoY price growth
+                  Sorted by 5yr outlook
                 </div>
               </div>
               <div style={{ fontSize: "10px", color: C.textSub, fontWeight: "300", marginBottom: "18px", letterSpacing: "0.02em" }}>
-                Ranked by annual growth rate
+                Established neighbourhoods and emerging areas combined
               </div>
-              {lisbonData.map((n, i) => {
-                const maxGrowth = lisbonData[0].growth;
-                const barWidth = (n.growth / maxGrowth) * 100;
+              {allAreas.map((n, i) => {
+                const maxGrowth = Math.max(...allAreas.map(a => a.growth));
+                const barWidth = (Math.max(0, n.growth) / maxGrowth) * 100;
                 const tagColors = {
-                  Hottest:  { bg: "#f5ece0", color: C.accent },
-                  Emerging: { bg: C.goodLt,  color: C.good },
-                  Rising:   { bg: "#eef2f8",  color: "#4a6080" },
-                  Stable:   { bg: C.surfaceAlt, color: C.textSub },
-                  Mature:   { bg: C.surfaceAlt, color: C.textMuted },
-                  Cooling:  { bg: C.badLt,   color: C.bad },
+                  Hottest:  { bg: "#f5ece0",    color: C.accent },
+                  Emerging: { bg: C.goodLt,      color: C.good },
+                  Rising:   { bg: "#eef2f8",     color: "#4a6080" },
+                  Stable:   { bg: C.surfaceAlt,  color: C.textSub },
+                  Mature:   { bg: C.surfaceAlt,  color: C.textMuted },
+                  Cooling:  { bg: C.badLt,       color: C.bad },
+                  Watch:    { bg: C.accentLt,    color: C.accent },
                 };
                 const tc = tagColors[n.tag] || tagColors.Stable;
                 const isSelected = selectedArea && selectedArea.name === n.name;
+                const phaseColor = n.phase ? ({
+                  "Early Entry":   { bg: C.goodLt,    color: C.good },
+                  "Rising":        { bg: C.goodLt,    color: C.good },
+                  "Early Rising":  { bg: "#eef2f8",   color: "#4a6080" },
+                  "Pre-Emergence": { bg: C.accentLt,  color: C.accent },
+                  "Watch List":    { bg: C.surfaceAlt, color: C.textSub },
+                }[n.phase] || { bg: C.surfaceAlt, color: C.textSub }) : null;
+                const riskColor = n.risk === "Low" ? C.good : n.risk === "Moderate" ? C.accent : C.bad;
+                const riskBg    = n.risk === "Low" ? C.goodLt : n.risk === "Moderate" ? C.accentLt : C.badLt;
+
                 return (
                   <div key={n.name}
                     onClick={() => { setSelectedArea(n); setAppreciation(parseFloat(n.avg5yr.toFixed(1))); }}
                     style={{
-                      marginBottom: i < lisbonData.length - 1 ? "14px" : "0",
-                      borderBottom: i < lisbonData.length - 1 ? "1px solid " + C.divider : "none",
+                      borderBottom: i < allAreas.length - 1 ? "1px solid " + C.divider : "none",
                       cursor: "pointer",
                       background: isSelected ? C.accentLt : "transparent",
                       margin: isSelected ? "0 -22px" : "0",
-                      padding: isSelected ? "0 22px" : "0",
-                      paddingBottom: i < lisbonData.length - 1 ? "14px" : "0",
+                      padding: isSelected ? "14px 22px" : "14px 0",
                       borderLeft: isSelected ? "2px solid " + C.accent : "2px solid transparent",
                       paddingLeft: isSelected ? "20px" : "0",
                       transition: "all 0.2s",
                     }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "7px" }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+
+                    {/* Name row */}
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap" }}>
                         <span style={{ fontSize: "13px", fontFamily: "Cormorant Garamond, serif", fontWeight: "500", color: C.text }}>
                           {n.name}
                         </span>
@@ -584,32 +689,53 @@ export default function ROICalculator() {
                         }}>
                           {n.tag}
                         </span>
+                        {n.phase && phaseColor && (
+                          <span style={{
+                            fontSize: "8px", fontWeight: "500", letterSpacing: "0.08em",
+                            textTransform: "uppercase", padding: "2px 6px", borderRadius: "2px",
+                            background: phaseColor.bg, color: phaseColor.color, fontFamily: "Jost, sans-serif",
+                          }}>
+                            {n.phase}
+                          </span>
+                        )}
                       </div>
-                      <span style={{ fontSize: "15px", fontFamily: "Cormorant Garamond, serif", fontWeight: "500", color: n.growth < 0 ? C.bad : i < 1 ? C.accent : C.text }}>
-                        {(n.growth >= 0 ? "+" : "") + n.growth + "%"}
-                      </span>
+                      <div style={{ textAlign: "right", flexShrink: 0, marginLeft: "8px" }}>
+                        <span style={{ fontSize: "14px", fontFamily: "Cormorant Garamond, serif", fontWeight: "500", color: n.growth < 0 ? C.bad : C.text }}>
+                          {(n.growth >= 0 ? "+" : "") + n.growth + "%"}
+                        </span>
+                        <div style={{ fontSize: "8px", color: C.textMuted, fontWeight: "300", letterSpacing: "0.04em" }}>YoY</div>
+                      </div>
                     </div>
-                    <div style={{ height: "3px", background: C.border, borderRadius: "2px", marginBottom: "6px" }}>
+
+                    {/* Growth bar */}
+                    <div style={{ height: "2px", background: C.border, borderRadius: "2px", marginBottom: "8px" }}>
                       <div style={{
-                        height: "100%", width: Math.max(0, barWidth) + "%",
-                        background: n.growth < 0 ? C.bad : i < 1 ? C.accent : i < 4 ? "#7a9a7a" : C.textMuted,
-                        borderRadius: "2px",
+                        height: "100%", width: barWidth + "%",
+                        background: n.growth < 0 ? C.bad : n.tag === "Hottest" ? C.accent : n.avg5yr >= 10 ? C.good : n.avg5yr >= 6 ? "#7a9a7a" : C.textMuted,
+                        borderRadius: "2px", transition: "width 0.4s ease",
                       }} />
                     </div>
+
+                    {/* Stats row */}
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
-                      <div style={{ display: "flex", gap: "12px" }}>
-                        <span style={{ fontSize: "10px", color: C.textMuted, fontWeight: "300" }}>{"Avg " + n.price + " EUR/m2"}</span>
+                      <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
+                        <span style={{ fontSize: "10px", color: C.textMuted, fontWeight: "300" }}>{"EUR " + n.price + "/m\xB2"}</span>
                         <span style={{ fontSize: "10px", color: C.textMuted, fontWeight: "300" }}>{"Yield ~" + n.yieldPct + "%"}</span>
+                        {n.score && (
+                          <span style={{ fontSize: "10px", color: C.accent, fontWeight: "400" }}>{"Score " + n.score}</span>
+                        )}
                       </div>
                       {isSelected
                         ? <span style={{ fontSize: "9px", color: C.accent, fontWeight: "500", letterSpacing: "0.08em" }}>Applied</span>
                         : <span style={{ fontSize: "9px", color: C.textMuted, fontWeight: "300", letterSpacing: "0.06em" }}>Tap to apply</span>
                       }
                     </div>
-                    <div style={{ background: isSelected ? "transparent" : C.surfaceAlt, border: "1px solid " + C.border, borderRadius: "3px", padding: "10px 12px" }}>
+
+                    {/* 5yr sparkline box */}
+                    <div style={{ background: isSelected ? "transparent" : C.surfaceAlt, border: "1px solid " + C.border, borderRadius: "3px", padding: "10px 12px", marginBottom: n.catalyst ? "10px" : "0" }}>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
                         <span style={{ fontSize: "9px", color: C.textMuted, letterSpacing: "0.1em", textTransform: "uppercase", fontWeight: "500" }}>5-Year Outlook</span>
-                        <span style={{ fontSize: "11px", fontFamily: "Cormorant Garamond, serif", fontWeight: "600", color: n.avg5yr >= 6 ? C.good : n.avg5yr >= 3 ? C.accent : C.bad }}>
+                        <span style={{ fontSize: "11px", fontFamily: "Cormorant Garamond, serif", fontWeight: "600", color: n.avg5yr >= 8 ? C.good : n.avg5yr >= 4 ? C.accent : C.bad }}>
                           {"Avg +" + n.avg5yr + "%/yr"}
                         </span>
                       </div>
@@ -622,35 +748,89 @@ export default function ROICalculator() {
                           const barColor = val < 0 ? C.bad : val < 5 ? C.textMuted : val < 10 ? C.accent : C.good;
                           return (
                             <div key={fi} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: "3px" }}>
-                              <div style={{ width: "100%", height: barH + "px", background: barColor, borderRadius: "2px", transition: "height 0.4s ease" }} />
+                              <div style={{ width: "100%", height: barH + "px", background: barColor, borderRadius: "2px" }} />
                               <span style={{ fontSize: "8px", color: C.textMuted, fontWeight: "300" }}>{(2026 + fi).toString().slice(2)}</span>
                             </div>
                           );
                         })}
                       </div>
-                      <div style={{ display: "flex", justifyContent: "space-between" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px" }}>
                         {n.forecast.map((val, fi) => (
                           <span key={fi} style={{ flex: 1, fontSize: "8px", color: val < 0 ? C.bad : C.textSub, fontWeight: "400", textAlign: "center" }}>
                             {(val >= 0 ? "+" : "") + val + "%"}
                           </span>
                         ))}
                       </div>
-                      <p style={{ fontSize: "9px", color: C.textSub, margin: "8px 0 0", lineHeight: 1.5, fontWeight: "300" }}>{n.outlook}</p>
+                      <p style={{ fontSize: "9px", color: C.textSub, margin: "4px 0 0", lineHeight: 1.5, fontWeight: "300" }}>{n.outlook}</p>
                     </div>
+
+                    {/* Emerging area detail: catalyst + signals + risk */}
+                    {n.catalyst && (
+                      <div style={{ marginTop: "10px" }}>
+                        <p style={{ fontSize: "10px", color: C.textSub, margin: "0 0 8px", lineHeight: 1.6, fontWeight: "300" }}>
+                          {n.catalyst}
+                        </p>
+                        <div style={{ display: "flex", flexWrap: "wrap", gap: "5px", marginBottom: "8px" }}>
+                          {n.signal.map((s, si) => (
+                            <span key={si} style={{
+                              fontSize: "9px", padding: "3px 8px", borderRadius: "2px",
+                              background: C.surfaceAlt, color: C.textSub,
+                              border: "1px solid " + C.border, fontWeight: "300",
+                              fontFamily: "Jost, sans-serif",
+                            }}>
+                              {s}
+                            </span>
+                          ))}
+                        </div>
+                        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                          <span style={{ fontSize: "9px", color: C.textMuted, fontWeight: "400", letterSpacing: "0.06em" }}>Entry risk:</span>
+                          <span style={{
+                            fontSize: "8px", fontWeight: "500", padding: "2px 7px", borderRadius: "2px",
+                            background: riskBg, color: riskColor,
+                            letterSpacing: "0.1em", textTransform: "uppercase", fontFamily: "Jost, sans-serif",
+                          }}>
+                            {n.risk}
+                          </span>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 );
               })}
             </div>
-            <div style={{ background: C.accentLt, border: "1px solid " + C.borderHov, borderRadius: "4px", padding: "14px 16px" }}>
-              <div style={{ fontSize: "9px", color: C.accent, letterSpacing: "0.14em", textTransform: "uppercase", fontWeight: "500", marginBottom: "6px" }}>
-                Market Note
+
+            {/* Wave Pattern */}
+            <div style={{ background: C.accentLt, border: "1px solid " + C.borderHov, borderRadius: "4px", padding: "14px 16px", marginBottom: "10px" }}>
+              <div style={{ fontSize: "9px", color: C.accent, letterSpacing: "0.14em", textTransform: "uppercase", fontWeight: "500", marginBottom: "8px" }}>
+                The Wave Pattern
               </div>
-              <p style={{ fontSize: "11px", color: C.textSub, margin: 0, lineHeight: 1.6, fontWeight: "300" }}>
-                Beato leads Lisbon with +32.3% growth in 2025, driven by tech hubs and creative industry relocation. Marvila has cooled sharply (-16.9%) after years of hype. The city-wide average hit EUR 5,886/m2 in Oct 2025 (INE). Gross yields average 5.65% city-wide.
+              {[
+                "2015-2018: Chiado and Bairro Alto mature, prices peak above EUR 7k/m\xB2",
+                "2018-2022: Beato and Marvila absorb spillover demand, yields compress",
+                "2022-2025: Beato surges +32%, Marvila cools. Metro suburbs ignite",
+                "2026+: Almada, Barreiro, Moita and Arroios positioned for next wave",
+              ].map((tip, i) => (
+                <div key={i} style={{ display: "flex", gap: "10px", marginBottom: i < 3 ? "8px" : "0", alignItems: "flex-start" }}>
+                  <div style={{
+                    width: "16px", height: "16px", borderRadius: "50%", flexShrink: 0,
+                    background: C.accent, display: "flex", alignItems: "center", justifyContent: "center",
+                    fontSize: "8px", color: "#fff", fontWeight: "600", fontFamily: "Jost, sans-serif",
+                  }}>
+                    {i + 1}
+                  </div>
+                  <p style={{ fontSize: "10px", color: C.textSub, margin: 0, lineHeight: 1.6, fontWeight: "300" }}>{tip}</p>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ background: C.surfaceAlt, border: "1px solid " + C.border, borderRadius: "4px", padding: "12px 16px" }}>
+              <p style={{ fontSize: "9px", color: C.textMuted, margin: 0, lineHeight: 1.6, fontWeight: "300", letterSpacing: "0.02em" }}>
+                Data: INE, Idealista 2025. Emerging area forecasts based on historical Lisbon gentrification wave patterns. Not financial advice.
               </p>
             </div>
           </div>
-        )}
+          );
+        })()}
 
         {/* Risk Tab */}
         {tab === "risk" && (
@@ -742,129 +922,6 @@ export default function ROICalculator() {
                   <p style={{ fontSize: "10px", color: C.textSub, margin: 0, lineHeight: 1.6, fontWeight: "300" }}>{tip}</p>
                 </div>
               ))}
-            </div>
-          </div>
-        )}
-
-        {/* Next Up Tab */}
-        {tab === "next up" && (
-          <div style={{ marginBottom: "16px" }}>
-            <div style={{ background: C.surface, border: "1px solid " + C.border, borderRadius: "4px", padding: "20px 22px", marginBottom: "12px" }}>
-              <div style={{ fontSize: "9px", color: C.textMuted, letterSpacing: "0.16em", textTransform: "uppercase", fontWeight: "500", marginBottom: "4px" }}>
-                Predicted Next Hotspots
-              </div>
-              <p style={{ fontSize: "10px", color: C.textSub, fontWeight: "300", margin: "0 0 20px", lineHeight: 1.6 }}>
-                Based on Lisbon gentrification wave patterns: price spillover from saturated districts, infrastructure catalysts, and early investor signals.
-              </p>
-
-              {nextUp.map((n, i) => {
-                const phaseColor = {
-                  "Early Entry":    { bg: C.goodLt,    color: C.good },
-                  "Rising":         { bg: C.goodLt,    color: C.good },
-                  "Early Rising":   { bg: "#eef2f8",   color: "#4a6080" },
-                  "Pre-Emergence":  { bg: C.accentLt,  color: C.accent },
-                  "Watch List":     { bg: C.surfaceAlt,color: C.textSub },
-                }[n.phase] || { bg: C.surfaceAlt, color: C.textSub };
-
-                const riskColor = n.risk === "Low" ? C.good : n.risk === "Moderate" ? C.accent : C.bad;
-                const riskBg    = n.risk === "Low" ? C.goodLt : n.risk === "Moderate" ? C.accentLt : C.badLt;
-
-                return (
-                  <div key={n.name} style={{
-                    padding: "18px 0",
-                    borderBottom: i < nextUp.length - 1 ? "1px solid " + C.divider : "none",
-                  }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "8px" }}>
-                      <div>
-                        <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
-                          <span style={{ fontSize: "15px", fontFamily: "Cormorant Garamond, serif", fontWeight: "600", color: C.text }}>
-                            {n.name}
-                          </span>
-                          <span style={{
-                            fontSize: "8px", fontWeight: "500", letterSpacing: "0.1em",
-                            textTransform: "uppercase", padding: "2px 7px", borderRadius: "2px",
-                            background: phaseColor.bg, color: phaseColor.color, fontFamily: "Jost, sans-serif",
-                          }}>
-                            {n.phase}
-                          </span>
-                        </div>
-                        <div style={{ display: "flex", gap: "12px" }}>
-                          <span style={{ fontSize: "10px", color: C.textMuted, fontWeight: "300" }}>{"EUR " + n.price + "/m2"}</span>
-                          <span style={{ fontSize: "10px", color: C.textMuted, fontWeight: "300" }}>{"Yield ~" + n.yieldPct + "%"}</span>
-                          <span style={{ fontSize: "10px", color: C.good, fontWeight: "400" }}>{"+" + n.growth + "% YoY"}</span>
-                        </div>
-                      </div>
-                      <div style={{ textAlign: "right", flexShrink: 0, marginLeft: "12px" }}>
-                        <div style={{ fontSize: "20px", fontFamily: "Cormorant Garamond, serif", fontWeight: "500", color: C.accent, lineHeight: 1 }}>
-                          {n.score}
-                        </div>
-                        <div style={{ fontSize: "8px", color: C.textMuted, letterSpacing: "0.08em", textTransform: "uppercase", marginTop: "2px" }}>
-                          score
-                        </div>
-                      </div>
-                    </div>
-
-                    <p style={{ fontSize: "10px", color: C.textSub, margin: "0 0 10px", lineHeight: 1.6, fontWeight: "300" }}>
-                      {n.catalyst}
-                    </p>
-
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: "5px", marginBottom: "8px" }}>
-                      {n.signal.map((s, si) => (
-                        <span key={si} style={{
-                          fontSize: "9px", padding: "3px 8px", borderRadius: "2px",
-                          background: C.surfaceAlt, color: C.textSub,
-                          border: "1px solid " + C.border, fontWeight: "300",
-                          fontFamily: "Jost, sans-serif",
-                        }}>
-                          {s}
-                        </span>
-                      ))}
-                    </div>
-
-                    <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                      <span style={{ fontSize: "9px", color: C.textMuted, fontWeight: "400", letterSpacing: "0.06em" }}>
-                        Entry risk:
-                      </span>
-                      <span style={{
-                        fontSize: "8px", fontWeight: "500", padding: "2px 7px", borderRadius: "2px",
-                        background: riskBg, color: riskColor,
-                        letterSpacing: "0.1em", textTransform: "uppercase", fontFamily: "Jost, sans-serif",
-                      }}>
-                        {n.risk}
-                      </span>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            <div style={{ background: C.accentLt, border: "1px solid " + C.borderHov, borderRadius: "4px", padding: "14px 16px" }}>
-              <div style={{ fontSize: "9px", color: C.accent, letterSpacing: "0.14em", textTransform: "uppercase", fontWeight: "500", marginBottom: "8px" }}>
-                The Wave Pattern
-              </div>
-              {[
-                "2015-2018: Chiado and Bairro Alto mature, prices peak above EUR 7k/m2",
-                "2018-2022: Beato and Marvila absorb spillover demand, yields compress",
-                "2022-2025: Beato surges +32%, Marvila cools. Metro suburbs ignite",
-                "2026+: Almada, Barreiro, Moita and Arroios positioned for next wave",
-              ].map((tip, i) => (
-                <div key={i} style={{ display: "flex", gap: "10px", marginBottom: i < 3 ? "8px" : "0", alignItems: "flex-start" }}>
-                  <div style={{
-                    width: "16px", height: "16px", borderRadius: "50%", flexShrink: 0,
-                    background: C.accent, display: "flex", alignItems: "center", justifyContent: "center",
-                    fontSize: "8px", color: "#fff", fontWeight: "600", fontFamily: "Jost, sans-serif",
-                  }}>
-                    {i + 1}
-                  </div>
-                  <p style={{ fontSize: "10px", color: C.textSub, margin: 0, lineHeight: 1.6, fontWeight: "300" }}>{tip}</p>
-                </div>
-              ))}
-            </div>
-
-            <div style={{ background: C.surfaceAlt, border: "1px solid " + C.border, borderRadius: "4px", padding: "12px 16px", marginTop: "10px" }}>
-              <p style={{ fontSize: "9px", color: C.textMuted, margin: 0, lineHeight: 1.6, fontWeight: "300", letterSpacing: "0.02em" }}>
-                Predictions based on historical Lisbon gentrification patterns, Setubal Peninsula +22.6% growth data (INE 2025), and metro suburb analysis. Not financial advice.
-              </p>
             </div>
           </div>
         )}
