@@ -158,8 +158,6 @@ export default function ROICalculator() {
     (capRate > 5 ? 15 : capRate > 3 ? 10 : 5)
   )));
 
-  const tabs = ["calculator", "breakdown", "projection", "risk"];
-
   // Risk calculations
   const ltv = ((loan / price) * 100);
   const dscr = (rent * 12) / (mortgage * 12);
@@ -563,7 +561,6 @@ export default function ROICalculator() {
                   <div key={n.name}
                     onClick={() => { setSelectedArea(n); setAppreciation(parseFloat(n.avg5yr.toFixed(1))); }}
                     style={{
-                      paddingBottom: i < lisbonData.length - 1 ? "14px" : "0",
                       marginBottom: i < lisbonData.length - 1 ? "14px" : "0",
                       borderBottom: i < lisbonData.length - 1 ? "1px solid " + C.divider : "none",
                       cursor: "pointer",
