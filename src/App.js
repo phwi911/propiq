@@ -238,104 +238,102 @@ var LABEL_OFFSETS = {
 };
 
 function LisbonMap(props) {
-  var selectedName=props.selectedName, onSelect=props.onSelect;
-  var [tooltip, setTooltip] = useState(null);
-  var LNG_MIN = -9.26, LNG_MAX = -8.93;
-  var LAT_MIN = 38.59, LAT_MAX = 38.85;
-  var W = 320, H = 240;
-  var px = lng => (lng - LNG_MIN) / (LNG_MAX - LNG_MIN) * W;
-  var py = lat => (1 - (lat - LAT_MIN) / (LAT_MAX - LAT_MIN)) * H;
+  var selectedName = props.selectedName, onSelect = props.onSelect;
+  var mapId = "propiq-leaflet-map";
 
-  var riverNorth = [
-    [px(-9.230), py(38.705)], [px(-9.210), py(38.704)], [px(-9.195), py(38.703)],
-    [px(-9.182), py(38.700)], [px(-9.165), py(38.706)], [px(-9.150), py(38.707)],
-    [px(-9.135), py(38.706)], [px(-9.115), py(38.710)], [px(-9.095), py(38.715)],
-    [px(-9.060), py(38.720)], [px(-9.020), py(38.718)], [px(-8.960), py(38.728)],
-  ];
-  var riverSouth = [
-    [px(-8.960), py(38.680)], [px(-9.010), py(38.670)], [px(-9.040), py(38.663)],
-    [px(-9.065), py(38.655)], [px(-9.090), py(38.648)], [px(-9.115), py(38.645)],
-    [px(-9.140), py(38.648)], [px(-9.160), py(38.652)], [px(-9.175), py(38.656)],
-    [px(-9.195), py(38.664)], [px(-9.220), py(38.670)], [px(-9.250), py(38.678)],
-  ];
-  var riverPts = riverNorth.concat(riverSouth.slice().reverse());
-  var riverPath = riverPts.map((p, i) => (i === 0 ? "M" : "L") + p[0].toFixed(1) + "," + p[1].toFixed(1)).join(" ") + " Z";
+  useEffect(function() {
+    var destroyed = false;
 
-  var mapLbl = {
-    "Beato":             [6, -7, "start"],
-    "Campo de Ourique":  [-5, 9, "end"],
-    "Parque das Nacoes": [6, -7, "start"],
-    "Alcantara":         [-5, 9, "end"],
-    "Estrela":           [-5, -8, "end"],
-    "Santo Antonio":     [6, -7, "start"],
-    "Misericordia":      [6, 8, "start"],
-    "Avenidas Novas":    [-5, -8, "end"],
-    "Chiado":            [-5, 9, "end"],
-    "Marvila":           [-5, -8, "end"],
-    "Arroios":           [6, 5, "start"],
-    "Olivais":           [6, -7, "start"],
-    "Almada":            [-5, 9, "end"],
-    "Barreiro":          [5, 8, "start"],
-    "Moita":             [-5, -8, "end"],
-    "Alcochete":         [-5, -8, "end"],
-  };
-  var shortName = name =>
-    name === "Campo de Ourique" ? "Campo O." :
-    name === "Avenidas Novas"   ? "Av. Novas" :
-    name === "Parque das Nacoes"? "Parque N." :
-    name === "Santo Antonio"    ? "Sto. Antonio" : name;
+    function addLeafletCSS() {
+      if (!document.getElementById("leaflet-css")) {
+        var link = document.createElement("link");
+        link.id = "leaflet-css";
+        link.rel = "stylesheet";
+        link.href = "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css";
+        document.head.appendChild(link);
+      }
+    }
+
+    function initMap() {
+      if (destroyed) return;
+      var container = document.getElementById(mapId);
+      if (!container || container._leaflet_id) return;
+      var L = window.L;
+      var map = L.map(container, {
+        center: [38.705, -9.118],
+        zoom: 11,
+        zoomControl: true,
+        scrollWheelZoom: false,
+        attributionControl: true,
+      });
+      L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
+        attribution: "(c) OpenStreetMap (c) CARTO",
+        subdomains: "abcd",
+        maxZoom: 19,
+      }).addTo(map);
+      ALL_AREAS.forEach(function(area) {
+        var c = AREA_CENTROIDS[area.name];
+        if (!c) return;
+        var col = areaDotColor(area);
+        var isSel = selectedName === area.name;
+        var marker = L.circleMarker([c[0], c[1]], {
+          radius: isSel ? 12 : 8,
+          fillColor: col,
+          fillOpacity: isSel ? 1 : 0.75,
+          color: "#fff",
+          weight: isSel ? 2.5 : 1.5,
+        }).addTo(map);
+        marker.bindTooltip(
+          "<div style='font-family:Jost,sans-serif;font-size:11px;padding:2px 4px'><b>" +
+          area.name + "</b><br>5yr avg: +" + area.avg5yr + "%/yr | Yield " + area.yieldPct + "%</div>",
+          { sticky: true }
+        );
+        marker.on("click", function() { onSelect(area); });
+      });
+      container._mapInstance = map;
+    }
+
+    addLeafletCSS();
+    if (window.L) {
+      setTimeout(initMap, 50);
+    } else {
+      var script = document.createElement("script");
+      script.src = "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js";
+      script.onload = function() { setTimeout(initMap, 50); };
+      document.body.appendChild(script);
+    }
+
+    return function() {
+      destroyed = true;
+      var container = document.getElementById(mapId);
+      if (container && container._mapInstance) {
+        container._mapInstance.remove();
+        delete container._mapInstance;
+        delete container._leaflet_id;
+      }
+    };
+  }, []);
+
+  useEffect(function() {
+    var container = document.getElementById(mapId);
+    if (!container || !container._mapInstance) return;
+    var map = container._mapInstance;
+    map.eachLayer(function(layer) {
+      if (layer.setRadius) {
+        var isSel = layer._tooltip && layer._tooltip._content &&
+          layer._tooltip._content.indexOf("<b>" + selectedName + "</b>") !== -1;
+        layer.setRadius(isSel ? 12 : 8);
+        layer.setStyle({ fillOpacity: isSel ? 1 : 0.75, weight: isSel ? 2.5 : 1.5 });
+        if (isSel) { map.panTo(layer.getLatLng(), { animate: true }); }
+      }
+    });
+  }, [selectedName]);
 
   return (
-    <div style={{ position: "relative" }}>
-      <svg viewBox={"0 0 " + W + " " + H} style={{ width: "100%", display: "block", borderRadius: "3px" }}>
-        <rect width={W} height={H} fill="#f0ece4" />
-        <path d={riverPath} fill="#aec8d8" opacity="0.85" />
-        <text x={px(-9.08)} y={py(38.682)} fontSize="7" fill="#6899b0" fontFamily="Jost, sans-serif"
-          fontWeight="300" letterSpacing="0.1em" transform={"rotate(-4," + px(-9.08) + "," + py(38.682) + ")"}>
-          RIO TEJO
-        </text>
-        <g transform={"translate(" + (W - 18) + ",14)"}>
-          <circle r="9" fill="white" fillOpacity="0.75" stroke="#c8c0b8" strokeWidth="0.8" />
-          <text textAnchor="middle" y="4" fontSize="8" fill="#9e7c4a" fontWeight="600">N</text>
-        </g>
-        {ALL_AREAS.map(area => {
-          var c = AREA_CENTROIDS[area.name];
-          if (!c) return null;
-          var x = px(c[1]), y = py(c[0]);
-          var col = areaDotColor(area);
-          var isSel = selectedName === area.name;
-          var off = mapLbl[area.name] || [6, -7, "start"];
-          return (
-            <g key={area.name} onClick={() => onSelect(area)}
-              onMouseEnter={() => setTooltip({ name: area.name, avg5yr: area.avg5yr, yieldPct: area.yieldPct, x: x, y: y })}
-              onMouseLeave={() => setTooltip(null)}
-              style={{ cursor: "pointer" }}>
-              {isSel && <circle cx={x} cy={y} r={11} fill="none" stroke={col} strokeWidth="1.2" opacity="0.3" />}
-              <circle cx={x} cy={y} r={isSel ? 7 : 5} fill={col} opacity={isSel ? 1 : 0.78} stroke="white" strokeWidth={isSel ? 1.5 : 1} />
-              <text x={x + off[0]} y={y + off[1]} fontSize="6.5" fill={isSel ? col : "#5c5250"}
-                fontFamily="Jost, sans-serif" fontWeight={isSel ? "500" : "300"} textAnchor={off[2]}>
-                {shortName(area.name)}
-              </text>
-            </g>
-          );
-        })}
-      </svg>
-      {tooltip && (
-        <div style={{
-          position: "absolute",
-          left: (tooltip.x / W * 100) + "%",
-          top: (tooltip.y / H * 100) + "%",
-          transform: "translate(-50%, -120%)",
-          background: "white", border: "1px solid #d8cfc6", borderRadius: "3px",
-          padding: "5px 8px", fontSize: "10px", fontFamily: "Jost, sans-serif",
-          pointerEvents: "none", whiteSpace: "nowrap", zIndex: 10,
-          boxShadow: "0 2px 6px rgba(0,0,0,0.08)",
-        }}>
-          <div style={{ fontWeight: "500", color: "#2c2420", marginBottom: "2px" }}>{tooltip.name}</div>
-          <div style={{ color: "#8a7870" }}>{"5yr avg: +" + tooltip.avg5yr + "%/yr  |  Yield " + tooltip.yieldPct + "%"}</div>
-        </div>
-      )}
-    </div>
+    <div
+      id={mapId}
+      style={{ width: "100%", height: "280px", borderRadius: "3px", background: "#e8e0d4" }}
+    />
   );
 }
 
@@ -821,4 +819,3 @@ export default function ROICalculator() {
     </div>
   );
 }
-
