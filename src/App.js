@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
 
 var fmt = (n) =>
   new Intl.NumberFormat("en-CA", {
