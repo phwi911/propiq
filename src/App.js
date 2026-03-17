@@ -221,8 +221,13 @@ function LisbonMap(props) {
 
     function initMap() {
       if (destroyed) return;
+      if (!areas.length) return;
       var container = document.getElementById(mapId);
-      if (!container || container._leaflet_id) return;
+      if (!container) return;
+      if (container._mapInstance) {
+        container._mapInstance.remove();
+        delete container._mapInstance;
+      }
       var L = window.L;
       var map = L.map(container, {
         center: [38.705, -9.118],
@@ -281,7 +286,7 @@ function LisbonMap(props) {
         delete container._leaflet_id;
       }
     };
-  }, [mapId, onSelect, selectedName]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [areas]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(function() {
     var container = document.getElementById(mapId);
@@ -554,7 +559,10 @@ export default function ROICalculator() {
                     ); })}
                   </div>
                 </div>
-                <svg viewBox="0 0 320 178" style={{ width: "100%", fontFamily: "Jost, sans-serif", overflow: "visible" }}>
+                {allAreas.length === 0 && (
+                  <div style={{ textAlign: "center", padding: "40px 0", color: C.textMuted, fontSize: "11px", letterSpacing: "0.1em" }}>Loading...</div>
+                )}
+                {allAreas.length > 0 && <svg viewBox="0 0 320 178" style={{ width: "100%", fontFamily: "Jost, sans-serif", overflow: "visible" }}>
                   <rect x={chartCx(CHART_X_MID)} y={CHART_PT} width={CHART_PR - chartCx(CHART_X_MID)} height={chartCy(CHART_Y_MID) - CHART_PT} fill="#f0f4f0" opacity="0.7" />
                   <rect x={CHART_PL} y={chartCy(CHART_Y_MID)} width={chartCx(CHART_X_MID) - CHART_PL} height={CHART_PB - chartCy(CHART_Y_MID)} fill="#f7f4f0" opacity="0.7" />
                   <rect x={chartCx(CHART_X_MID)} y={chartCy(CHART_Y_MID)} width={CHART_PR - chartCx(CHART_X_MID)} height={CHART_PB - chartCy(CHART_Y_MID)} fill="#fdf6ee" opacity="0.7" />
@@ -609,10 +617,10 @@ export default function ROICalculator() {
                     </a>
                   </div>
                 )}
-                <div style={{ display: "flex", justifyContent: "space-between", marginTop: "8px", paddingTop: "8px", borderTop: "1px solid " + C.divider }}>
+                {allAreas.length > 0 && <div style={{ display: "flex", justifyContent: "space-between", marginTop: "8px", paddingTop: "8px", borderTop: "1px solid " + C.divider }}>
                   <span style={{ fontSize: "8.5px", color: C.textMuted, fontWeight: "300" }}>Tap any dot to apply to calculator</span>
                   <span style={{ fontSize: "8.5px", color: C.textMuted, fontWeight: "300" }}>5yr avg %/yr</span>
-                </div>
+                </div>}
               </div>
             )}
 
