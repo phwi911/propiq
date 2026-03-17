@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-/* eslint-disable react-hooks/exhaustive-deps */
 
 var fmt = (n) =>
   new Intl.NumberFormat("en-CA", {
@@ -124,67 +123,67 @@ var areaDotColor = n =>
   n.avg5yr >= 10 ? "#4a7059" : n.avg5yr >= 7 ? "#9e7c4a" : n.avg5yr >= 5 ? "#7a8a9a" : "#904a38";
 
 var LISBON_DATA = [
-  { name: "Beato",            growth: 32.3,  price: 4800, yieldPct: 6.2, tag: "Hottest",
+  { name: "Beato", url: "https://www.idealista.pt/comprar-casas/lisboa/beato/",            growth: 32.3,  price: 4800, yieldPct: 6.2, tag: "Hottest",
     forecast: [18.0, 13.5, 10.0, 8.5, 7.5], avg5yr: 11.5,
     outlook: "Rapid cooling expected as prices normalise. Still strong mid-term but early buyers already won." },
-  { name: "Campo de Ourique", growth: 14.8,  price: 6700, yieldPct: 4.8, tag: "Rising",
+  { name: "Campo de Ourique", url: "https://www.idealista.pt/comprar-casas/lisboa/campo-de-ourique/", growth: 14.8,  price: 6700, yieldPct: 4.8, tag: "Rising",
     forecast: [12.0, 10.5, 9.0, 8.0, 7.0], avg5yr: 9.3,
     outlook: "Sustained family-driven demand. Residential desirability keeps steady appreciation above city average." },
-  { name: "Parque das Nacoes", growth: 12.1, price: 5840, yieldPct: 5.1, tag: "Rising",
+  { name: "Parque das Nacoes", url: "https://www.idealista.pt/comprar-casas/lisboa/parque-das-nacoes/", growth: 12.1, price: 5840, yieldPct: 5.1, tag: "Rising",
     forecast: [10.0, 8.5, 7.5, 7.0, 6.5], avg5yr: 7.9,
     outlook: "Tech corridor presence anchors demand. Maturing but still outperforms Lisbon average." },
-  { name: "Alcantara",        growth: 10.3,  price: 5100, yieldPct: 5.5, tag: "Rising",
+  { name: "Alcantara", url: "https://www.idealista.pt/comprar-casas/lisboa/alcantara/",        growth: 10.3,  price: 5100, yieldPct: 5.5, tag: "Rising",
     forecast: [9.5, 9.0, 8.0, 7.5, 7.0], avg5yr: 8.2,
     outlook: "Waterfront regeneration continues. Creative economy and proximity to Belem sustain momentum." },
-  { name: "Estrela",          growth: 8.4,   price: 5490, yieldPct: 4.6, tag: "Stable",
+  { name: "Estrela", url: "https://www.idealista.pt/comprar-casas/lisboa/estrela/",          growth: 8.4,   price: 5490, yieldPct: 4.6, tag: "Stable",
     forecast: [7.5, 7.0, 6.5, 6.0, 6.0], avg5yr: 6.6,
     outlook: "Consistent blue-chip neighbourhood. Safe store of value but limited upside." },
-  { name: "Santo Antonio",    growth: 7.2,   price: 7290, yieldPct: 3.9, tag: "Mature",
+  { name: "Santo Antonio", url: "https://www.idealista.pt/comprar-casas/lisboa/santo-antonio/",    growth: 7.2,   price: 7290, yieldPct: 3.9, tag: "Mature",
     forecast: [6.0, 5.5, 5.0, 5.0, 4.5], avg5yr: 5.2,
     outlook: "Most expensive parish. Price ceiling limits upside. Yield compression ongoing." },
-  { name: "Misericordia",     growth: 4.3,   price: 6790, yieldPct: 4.1, tag: "Mature",
+  { name: "Misericordia", url: "https://www.idealista.pt/comprar-casas/lisboa/misericordia/",     growth: 4.3,   price: 6790, yieldPct: 4.1, tag: "Mature",
     forecast: [4.5, 4.5, 4.0, 4.0, 3.5], avg5yr: 4.1,
     outlook: "Stable heritage district. Low volatility, low growth. Better suited to wealth preservation." },
-  { name: "Avenidas Novas",   growth: 1.7,   price: 6920, yieldPct: 3.8, tag: "Mature",
+  { name: "Avenidas Novas", url: "https://www.idealista.pt/comprar-casas/lisboa/avenidas-novas/",   growth: 1.7,   price: 6920, yieldPct: 3.8, tag: "Mature",
     forecast: [3.5, 4.0, 4.0, 3.5, 3.0], avg5yr: 3.6,
     outlook: "Recovery expected after underperformance in 2025. Business district demand provides floor." },
-  { name: "Chiado",           growth: 1.2,   price: 8200, yieldPct: 3.5, tag: "Mature",
+  { name: "Chiado", url: "https://www.idealista.pt/comprar-casas/lisboa/santa-maria-maior/",           growth: 1.2,   price: 8200, yieldPct: 3.5, tag: "Mature",
     forecast: [3.0, 3.5, 3.5, 3.0, 3.0], avg5yr: 3.2,
     outlook: "Iconic but fully priced. Tourism-driven demand caps yield. Hold, do not enter at current levels." },
-  { name: "Marvila",          growth: -16.9, price: 3600, yieldPct: 7.2, tag: "Cooling",
+  { name: "Marvila", url: "https://www.idealista.pt/comprar-casas/lisboa/marvila/",          growth: -16.9, price: 3600, yieldPct: 7.2, tag: "Cooling",
     forecast: [-5.0, 2.0, 5.5, 7.0, 8.0], avg5yr: 3.5,
     outlook: "Post-hype correction ongoing in 2026. Recovery expected by 2027-28. High yield compensates patient investors." },
-  { name: "Almada",    growth: 18.2, price: 2800, yieldPct: 7.1, tag: "Emerging",
+  { name: "Almada", url: "https://www.idealista.pt/comprar-casas/almada-municipio/",    growth: 18.2, price: 2800, yieldPct: 7.1, tag: "Emerging",
     forecast: [20.0, 16.0, 13.0, 11.0, 9.0], avg5yr: 13.8,
     outlook: "Metro expansion and Costa da Caparica beach access driving demand. Central Lisbon spillover.",
     catalyst: "Metro expansion + Costa da Caparica beach access. Central Lisbon spillover as prices hit EUR 6k/m2.",
     signal: ["Metro line extension confirmed", "Young professional inflow", "Lisbon ferry commuters relocating"],
     risk: "Low", phase: "Early Entry", score: 92 },
-  { name: "Barreiro",  growth: 15.1, price: 2200, yieldPct: 7.6, tag: "Emerging",
+  { name: "Barreiro", url: "https://www.idealista.pt/comprar-casas/barreiro-municipio/",  growth: 15.1, price: 2200, yieldPct: 7.6, tag: "Emerging",
     forecast: [16.0, 13.5, 11.0, 9.5, 8.0], avg5yr: 11.6,
     outlook: "Setubal Peninsula led national growth at +22.6% in 2025. Lower entry prices than Almada.",
     catalyst: "Setubal Peninsula led national growth at +22.6% in 2025. Waterfront regeneration.",
     signal: ["22.6% peninsula-wide growth in 2025", "Ferry link to Lisbon", "Industrial waterfront regeneration"],
     risk: "Low", phase: "Rising", score: 84 },
-  { name: "Moita",     growth: 12.4, price: 1900, yieldPct: 8.2, tag: "Emerging",
+  { name: "Moita", url: "https://www.idealista.pt/comprar-casas/moita-municipio/",     growth: 12.4, price: 1900, yieldPct: 8.2, tag: "Emerging",
     forecast: [14.0, 12.0, 10.5, 9.0, 8.0], avg5yr: 10.7,
     outlook: "Last truly affordable riverside municipality. Follows Barreiro trajectory from 3 years prior.",
     catalyst: "Last truly affordable riverside municipality. Developer interest confirmed.",
     signal: ["New residential development pipeline", "Institutional investor activity", "Infrastructure upgrades"],
     risk: "Moderate", phase: "Pre-Emergence", score: 87 },
-  { name: "Arroios",   growth: 11.3, price: 4500, yieldPct: 5.8, tag: "Rising",
+  { name: "Arroios", url: "https://www.idealista.pt/comprar-casas/lisboa/arroios/",   growth: 11.3, price: 4500, yieldPct: 5.8, tag: "Rising",
     forecast: [11.0, 10.0, 9.0, 8.5, 8.0], avg5yr: 9.3,
     outlook: "Inside city limits with affordable prices. Mirrors Intendente trajectory from 2019-2022.",
     catalyst: "Inside Lisbon city limits with still-affordable prices. Young international community forming.",
     signal: ["New co-working hubs opening", "Cafe and restaurant scene emerging", "Artist and expat community growing"],
     risk: "Low", phase: "Early Rising", score: 79 },
-  { name: "Olivais",   growth: 8.7,  price: 3200, yieldPct: 6.4, tag: "Rising",
+  { name: "Olivais", url: "https://www.idealista.pt/comprar-casas/lisboa/olivais/",   growth: 8.7,  price: 3200, yieldPct: 6.4, tag: "Rising",
     forecast: [10.0, 9.0, 8.0, 7.5, 7.0], avg5yr: 8.3,
     outlook: "Adjacent to Beato and Parque das Nacoes. Benefits from Beato tech hub spillover.",
     catalyst: "Adjacent to Beato and Parque das Nacoes. Underpriced relative to neighbours.",
     signal: ["Proximity to Beato tech corridor", "Metro Red Line access", "Price gap narrowing"],
     risk: "Moderate", phase: "Pre-Emergence", score: 76 },
-  { name: "Alcochete", growth: 9.3,  price: 2100, yieldPct: 7.8, tag: "Watch",
+  { name: "Alcochete", url: "https://www.idealista.pt/comprar-casas/alcochete-municipio/", growth: 9.3,  price: 2100, yieldPct: 7.8, tag: "Watch",
     forecast: [9.0, 8.5, 8.0, 7.5, 7.0], avg5yr: 8.0,
     outlook: "New international school attracting expat families. Montijo airport proximity creating demand.",
     catalyst: "New international school attracting expat families. Road improvements and Montijo airport proximity.",
@@ -285,8 +284,10 @@ function LisbonMap(props) {
           weight: isSel ? 2.5 : 1.5,
         }).addTo(map);
         marker.bindTooltip(
-          "<div style='font-family:Jost,sans-serif;font-size:11px;padding:2px 4px'><b>" +
-          area.name + "</b><br>5yr avg: +" + area.avg5yr + "%/yr | Yield " + area.yieldPct + "%</div>",
+          "<div style='font-family:Jost,sans-serif;font-size:11px;padding:4px 6px;line-height:1.6'><b>" +
+          area.name + "</b><br>5yr avg: +" + area.avg5yr + "%/yr | Yield " + area.yieldPct + "%" +
+          (area.url ? "<br><a href='" + area.url + "' target='_blank' style='color:#9e7c4a;font-size:10px'>View on Idealista</a>" : "") +
+          "</div>",
           { sticky: true }
         );
         marker.on("click", function() { onSelect(area); });
@@ -313,7 +314,7 @@ function LisbonMap(props) {
         delete container._leaflet_id;
       }
     };
-  }, []);
+  }, [mapId, onSelect, selectedName]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(function() {
     var container = document.getElementById(mapId);
@@ -330,7 +331,7 @@ function LisbonMap(props) {
         }
       }
     });
-  }, [selectedName]);
+  }, [mapId, selectedName]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div
@@ -637,7 +638,16 @@ export default function ROICalculator() {
                             <span style={{ fontSize: "10px", color: C.textMuted, fontWeight: "300" }}>{"EUR " + a.price + "/m2"}</span>
                             <span style={{ fontSize: "10px", color: C.textMuted, fontWeight: "300" }}>{"Yield ~" + a.yieldPct + "%"}</span>
                           </div>
-                          <span style={{ fontSize: "9px", color: isSel ? C.accent : C.textMuted, fontWeight: isSel ? "500" : "300" }}>{isSel ? "Applied" : "Tap to apply"}</span>
+                          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                            <span style={{ fontSize: "9px", color: isSel ? C.accent : C.textMuted, fontWeight: isSel ? "500" : "300" }}>{isSel ? "Applied" : "Tap to apply"}</span>
+                            {a.url && (
+                              <a href={a.url} target="_blank" rel="noopener noreferrer"
+                                onClick={function(e) { e.stopPropagation(); }}
+                                style={{ fontSize: "8px", color: C.accent, textDecoration: "none", border: "1px solid " + C.borderHov, borderRadius: "2px", padding: "2px 7px", fontWeight: "500", letterSpacing: "0.08em", textTransform: "uppercase", fontFamily: "Jost, sans-serif", whiteSpace: "nowrap" }}>
+                                Idealista
+                              </a>
+                            )}
+                          </div>
                         </div>
                         <div style={{ background: C.surfaceAlt, border: "1px solid "+C.border, borderRadius: "3px", padding: "8px 10px" }}>
                           <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px" }}>
