@@ -320,11 +320,13 @@ function LisbonMap(props) {
     var map = container._mapInstance;
     map.eachLayer(function(layer) {
       if (layer.setRadius) {
-        var isSel = layer._tooltip && layer._tooltip._content &&
-          layer._tooltip._content.indexOf("<b>" + selectedName + "</b>") !== -1;
+        var isSel = layer._tooltip && layer._tooltip._content && layer._tooltip._content.indexOf("<b>" + selectedName + "</b>") !== -1;
         layer.setRadius(isSel ? 12 : 8);
         layer.setStyle({ fillOpacity: isSel ? 1 : 0.75, weight: isSel ? 2.5 : 1.5 });
-        if (isSel) { map.panTo(layer.getLatLng(), { animate: true }); }
+        if (isSel) {
+          var latlng = layer.getLatLng();
+          map.panTo(latlng, { animate: true });
+        }
       }
     });
   }, [selectedName]);
