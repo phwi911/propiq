@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
- 
+
 var SUPABASE_URL = process.env.REACT_APP_SUPABASE_URL;
 var SUPABASE_KEY = process.env.REACT_APP_SUPABASE_KEY;
- 
+
 function fetchAreas() {
   return fetch(SUPABASE_URL + "/rest/v1/areas?select=*&order=avg5yr.desc", {
     headers: {
@@ -32,16 +32,16 @@ function fetchAreas() {
     });
   });
 }
- 
+
 var fmt = (n) =>
   new Intl.NumberFormat("en-CA", {
     style: "currency",
     currency: "CAD",
     maximumFractionDigits: 0,
   }).format(n);
- 
+
 var pct = (n) => n.toFixed(1) + "%";
- 
+
 var C = {
   bg:         "#f7f4f0",
   surface:    "#ffffff",
@@ -60,7 +60,7 @@ var C = {
   badLt:      "#f5ecea",
   divider:    "#ede6dd",
 };
- 
+
 function Slider(props) {
   var label=props.label, value=props.value, min=props.min, max=props.max, step=props.step, onChange=props.onChange, display=props.display;
   var fill = ((value - min) / (max - min)) * 100;
@@ -93,7 +93,7 @@ function Slider(props) {
     </div>
   );
 }
- 
+
 function MetricCard(props) {
   var label=props.label, value=props.value, sub=props.sub, accent=props.accent, positive=props.positive;
   var isGood = positive === true;
@@ -115,7 +115,7 @@ function MetricCard(props) {
     </div>
   );
 }
- 
+
 function Gauge(props) {
   var score=props.score;
   var angle = -135 + (score / 100) * 270;
@@ -151,12 +151,12 @@ function Gauge(props) {
     </div>
   );
 }
- 
+
 var areaDotColor = n =>
   n.avg5yr >= 10 ? "#4a7059" : n.avg5yr >= 7 ? "#9e7c4a" : n.avg5yr >= 5 ? "#7a8a9a" : "#904a38";
- 
- 
- 
+
+
+
 var AREA_CENTROIDS = {
   "Beato":             [38.725, -9.108],
   "Campo de Ourique":  [38.714, -9.165],
@@ -175,13 +175,13 @@ var AREA_CENTROIDS = {
   "Moita":             [38.638, -9.020],
   "Alcochete":         [38.752, -8.962],
 };
- 
+
 var CHART_X_MIN = 2, CHART_X_MAX = 15, CHART_Y_MIN = 3, CHART_Y_MAX = 9;
 var CHART_PL = 36, CHART_PR = 308, CHART_PT = 12, CHART_PB = 162;
 var chartCx = v => CHART_PL + (v - CHART_X_MIN) / (CHART_X_MAX - CHART_X_MIN) * (CHART_PR - CHART_PL);
 var chartCy = v => CHART_PB - (v - CHART_Y_MIN) / (CHART_Y_MAX - CHART_Y_MIN) * (CHART_PB - CHART_PT);
 var CHART_X_MID = 8, CHART_Y_MID = 6;
- 
+
 var LABEL_OFFSETS = {
   "Almada":            [6, -8],
   "Barreiro":          [6, 8],
@@ -200,15 +200,15 @@ var LABEL_OFFSETS = {
   "Avenidas Novas":    [-6, 9],
   "Chiado":            [6, -8],
 };
- 
+
 function LisbonMap(props) {
-  var selectedName = props.selectedName, onSelect = props.onSelect;
+  var selectedName = props.selectedName, onSelect = props.onSelect, areas = props.areas || [];
   var mapId = "propiq-leaflet-map";
   var [activeArea, setActiveArea] = useState(null);
- 
+
   useEffect(function() {
     var destroyed = false;
- 
+
     function addLeafletCSS() {
       if (!document.getElementById("leaflet-css")) {
         var link = document.createElement("link");
@@ -218,7 +218,7 @@ function LisbonMap(props) {
         document.head.appendChild(link);
       }
     }
- 
+
     function initMap() {
       if (destroyed) return;
       var container = document.getElementById(mapId);
@@ -236,7 +236,7 @@ function LisbonMap(props) {
         subdomains: "abcd",
         maxZoom: 19,
       }).addTo(map);
-      ALL_AREAS.forEach(function(area) {
+      areas.forEach(function(area) {
         var c = AREA_CENTROIDS[area.name];
         if (!c) return;
         var col = areaDotColor(area);
@@ -261,7 +261,7 @@ function LisbonMap(props) {
       });
       container._mapInstance = map;
     }
- 
+
     addLeafletCSS();
     if (window.L) {
       setTimeout(initMap, 50);
@@ -271,7 +271,7 @@ function LisbonMap(props) {
       script.onload = function() { setTimeout(initMap, 50); };
       document.body.appendChild(script);
     }
- 
+
     return function() {
       destroyed = true;
       var container = document.getElementById(mapId);
@@ -282,7 +282,7 @@ function LisbonMap(props) {
       }
     };
   }, [mapId, onSelect, selectedName]); // eslint-disable-line react-hooks/exhaustive-deps
- 
+
   useEffect(function() {
     var container = document.getElementById(mapId);
     if (!container || !container._mapInstance) return;
@@ -299,7 +299,7 @@ function LisbonMap(props) {
       }
     });
   }, [mapId, selectedName]); // eslint-disable-line react-hooks/exhaustive-deps
- 
+
   return (
     <div>
       <div
@@ -353,7 +353,7 @@ function LisbonMap(props) {
     </div>
   );
 }
- 
+
 export default function ROICalculator() {
   var [areas, setAreas] = useState([]);
   var [areasLoading, setAreasLoading] = useState(true);
@@ -367,7 +367,7 @@ export default function ROICalculator() {
   var [marketSubTab, setMarketSubTab] = useState("matrix");
   var [ready, setReady] = useState(false);
   var [selectedArea, setSelectedArea] = useState(null);
- 
+
   useEffect(() => {
     setTimeout(() => setReady(true), 80);
     var link = document.createElement("link");
@@ -379,7 +379,7 @@ export default function ROICalculator() {
       setAreasLoading(false);
     }).catch(function() { setAreasLoading(false); });
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
- 
+
   var down = price * (downPct / 100);
   var loan = price - down;
   var mo = rate / 100 / 12;
@@ -391,14 +391,14 @@ export default function ROICalculator() {
   var capRate = ((rent - expenses) * 12 / price) * 100;
   var annualAppreciation = price * (appreciation / 100);
   var roi = ((annualCashFlow + annualAppreciation) / down) * 100;
- 
+
   var score = Math.min(100, Math.max(0, Math.round(
     (grossYield > 6 ? 30 : grossYield > 4 ? 20 : 10) +
     (cashFlow > 500 ? 30 : cashFlow > 0 ? 20 : cashFlow > -300 ? 5 : 0) +
     (roi > 15 ? 25 : roi > 8 ? 18 : roi > 0 ? 10 : 0) +
     (capRate > 5 ? 15 : capRate > 3 ? 10 : 5)
   )));
- 
+
   var ltv = ((loan / price) * 100);
   var dscr = (rent * 12) / (mortgage * 12);
   var breakEvenOccupancy = (mortgage + expenses) / rent * 100;
@@ -407,7 +407,7 @@ export default function ROICalculator() {
   var stressMortgage = loan * (stressMo * Math.pow(1 + stressMo, n)) / (Math.pow(1 + stressMo, n) - 1);
   var stressCashFlow = rent - stressMortgage - expenses;
   var vacancyImpact = rent * 0.08 * 12;
- 
+
   var risks = [
     {
       label: "Leverage (LTV)", value: ltv.toFixed(0) + "%",
@@ -435,7 +435,7 @@ export default function ROICalculator() {
       note: "One month vacancy per year costs " + fmt(vacancyImpact) + ". Maintain a reserve fund to cover this.",
     },
   ];
- 
+
   var riskCounts = risks.reduce((a, r) => { a[r.score] = (a[r.score] || 0) + 1; return a; }, {});
   var overallRisk = riskCounts["High"] >= 3 ? "High" : (riskCounts["High"] >= 1 || riskCounts["Moderate"] >= 3) ? "Moderate" : "Low";
   var allAreas = areas;
@@ -445,7 +445,7 @@ export default function ROICalculator() {
     { label: "Operating Expenses", value: -expenses, positive: false },
     { label: "Net Cash Flow", value: cashFlow, bold: true, positive: cashFlow >= 0 },
   ];
- 
+
   return (
     <div style={{
       minHeight: "100vh", background: C.bg, fontFamily: "Jost, sans-serif",
@@ -457,13 +457,13 @@ export default function ROICalculator() {
         transform: ready ? "translateY(0)" : "translateY(16px)",
         transition: "opacity 0.5s ease, transform 0.5s ease",
       }}>
- 
+
         {areasLoading && (
           <div style={{ textAlign: "center", padding: "40px 0", color: C.textMuted, fontSize: "11px", letterSpacing: "0.1em" }}>
             Loading market data...
           </div>
         )}
- 
+
         {/* Header */}
         <div style={{ marginBottom: "32px", borderBottom: "1px solid " + C.divider, paddingBottom: "24px" }}>
           <div style={{ fontSize: "10px", color: C.textMuted, letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: "10px", fontWeight: "400" }}>
@@ -476,7 +476,7 @@ export default function ROICalculator() {
             Evaluate return on real estate
           </p>
         </div>
- 
+
         {/* Row 1: Markets tab */}
         <div style={{ display: "flex", borderBottom: "1px solid " + C.border, marginBottom: "0" }}>
           <button onClick={() => setTab("markets")} style={{
@@ -490,7 +490,7 @@ export default function ROICalculator() {
             Markets
           </button>
         </div>
- 
+
         {/* Row 2: Deal analysis tabs */}
         <div style={{ display: "flex", borderBottom: "1px solid " + C.border, marginBottom: "16px" }}>
           {["calculator", "breakdown", "projection", "risk"].map(t => (
@@ -506,14 +506,14 @@ export default function ROICalculator() {
             </button>
           ))}
         </div>
- 
+
         {/* Score Gauge */}
         {tab !== "markets" && (
           <div style={{ display: "flex", justifyContent: "center", marginBottom: "24px" }}>
             <Gauge score={score} />
           </div>
         )}
- 
+
         {/* Markets Tab */}
         {tab === "markets" && (
           <div style={{ marginBottom: "16px" }}>
@@ -533,7 +533,7 @@ export default function ROICalculator() {
                 </button>;
               })}
             </div>
- 
+
             {/* Matrix sub-tab */}
             {marketSubTab === "matrix" && (
               <div style={{ background: C.surface, border: "1px solid " + C.border, borderRadius: "4px", padding: "16px 18px", marginBottom: "12px" }}>
@@ -615,7 +615,7 @@ export default function ROICalculator() {
                 </div>
               </div>
             )}
- 
+
             {/* Map sub-tab */}
             {marketSubTab === "map" && (
               <div style={{ background: C.surface, border: "1px solid " + C.border, borderRadius: "4px", padding: "16px 18px", marginBottom: "12px" }}>
@@ -633,6 +633,7 @@ export default function ROICalculator() {
                   ); })}
                 </div>
                 <LisbonMap
+                  areas={allAreas}
                   selectedName={selectedArea && selectedArea.name}
                   onSelect={a => { setSelectedArea(a); setAppreciation(parseFloat(a.avg5yr.toFixed(1))); }}
                 />
@@ -654,7 +655,7 @@ export default function ROICalculator() {
                 </div>
               </div>
             )}
- 
+
             {/* List sub-tab */}
             {marketSubTab === "list" && (
               <div>
@@ -758,7 +759,7 @@ export default function ROICalculator() {
             )}
           </div>
         )}
- 
+
         {/* Calculator Tab */}
         {tab === "calculator" && (
           <div style={{ background: C.surface, border: "1px solid " + C.border, borderRadius: "4px", padding: "24px 22px", marginBottom: "12px" }}>
@@ -778,7 +779,7 @@ export default function ROICalculator() {
             </div>
           </div>
         )}
- 
+
         {/* Breakdown Tab */}
         {tab === "breakdown" && (
           <div style={{ marginBottom: "16px" }}>
@@ -801,7 +802,7 @@ export default function ROICalculator() {
             </div>
           </div>
         )}
- 
+
         {/* Projection Tab */}
         {tab === "projection" && (
           <div style={{ background: C.surface, border: "1px solid " + C.border, borderRadius: "4px", padding: "20px 22px", marginBottom: "12px" }}>
@@ -824,7 +825,7 @@ export default function ROICalculator() {
             })}
           </div>
         )}
- 
+
         {/* Risk Tab */}
         {tab === "risk" && (
           <div style={{ marginBottom: "16px" }}>
@@ -870,7 +871,7 @@ export default function ROICalculator() {
             </div>
           </div>
         )}
- 
+
         {/* CTA */}
         <button
           style={{ width: "100%", padding: "16px", background: C.text, border: "none", borderRadius: "4px", fontSize: "10px", fontWeight: "500", color: C.bg, cursor: "pointer", fontFamily: "Jost, sans-serif", letterSpacing: "0.16em", textTransform: "uppercase", transition: "background 0.2s" }}
@@ -882,7 +883,7 @@ export default function ROICalculator() {
         <p style={{ textAlign: "center", fontSize: "10px", color: C.textMuted, marginTop: "16px", fontWeight: "300", letterSpacing: "0.02em" }}>
           For informational purposes only. Consult a financial advisor.
         </p>
- 
+
       </div>
     </div>
   );
