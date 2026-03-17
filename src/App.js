@@ -562,7 +562,7 @@ export default function ROICalculator() {
                 {allAreas.length === 0 && (
                   <div style={{ textAlign: "center", padding: "40px 0", color: C.textMuted, fontSize: "11px", letterSpacing: "0.1em" }}>Loading...</div>
                 )}
-                {allAreas.length > 0 && <svg viewBox="0 0 320 178" style={{ width: "100%", fontFamily: "Jost, sans-serif", overflow: "visible" }}>
+                <svg viewBox="0 0 320 178" style={{ width: "100%", fontFamily: "Jost, sans-serif", overflow: "visible" }}>
                   <rect x={chartCx(CHART_X_MID)} y={CHART_PT} width={CHART_PR - chartCx(CHART_X_MID)} height={chartCy(CHART_Y_MID) - CHART_PT} fill="#f0f4f0" opacity="0.7" />
                   <rect x={CHART_PL} y={chartCy(CHART_Y_MID)} width={chartCx(CHART_X_MID) - CHART_PL} height={CHART_PB - chartCy(CHART_Y_MID)} fill="#f7f4f0" opacity="0.7" />
                   <rect x={chartCx(CHART_X_MID)} y={chartCy(CHART_Y_MID)} width={CHART_PR - chartCx(CHART_X_MID)} height={CHART_PB - chartCy(CHART_Y_MID)} fill="#fdf6ee" opacity="0.7" />
@@ -617,11 +617,10 @@ export default function ROICalculator() {
                     </a>
                   </div>
                 )}
-                {allAreas.length > 0 && <div style={{ display: "flex", justifyContent: "space-between", marginTop: "8px", paddingTop: "8px", borderTop: "1px solid " + C.divider }}>
+                <div style={{ display: "flex", justifyContent: "space-between", marginTop: "8px", paddingTop: "8px", borderTop: "1px solid " + C.divider }}>
                   <span style={{ fontSize: "8.5px", color: C.textMuted, fontWeight: "300" }}>Tap any dot to apply to calculator</span>
                   <span style={{ fontSize: "8.5px", color: C.textMuted, fontWeight: "300" }}>5yr avg %/yr</span>
-                </div>}
-              </div>
+                </div>
             )}
 
             {/* Map sub-tab */}
