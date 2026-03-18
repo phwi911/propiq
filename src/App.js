@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-
+ 
 var SUPABASE_URL = process.env.REACT_APP_SUPABASE_URL;
 var SUPABASE_KEY = process.env.REACT_APP_SUPABASE_KEY;
-
+ 
 function fetchAreas() {
   return fetch(SUPABASE_URL + "/rest/v1/areas?select=*&order=avg5yr.desc", {
     headers: {
@@ -32,16 +32,16 @@ function fetchAreas() {
     });
   });
 }
-
+ 
 var fmt = (n) =>
   new Intl.NumberFormat("en-CA", {
     style: "currency",
     currency: "CAD",
     maximumFractionDigits: 0,
   }).format(n);
-
+ 
 var pct = (n) => n.toFixed(1) + "%";
-
+ 
 var C = {
   bg:         "#f7f4f0",
   surface:    "#ffffff",
@@ -60,7 +60,7 @@ var C = {
   badLt:      "#f5ecea",
   divider:    "#ede6dd",
 };
-
+ 
 function Slider(props) {
   var label=props.label, value=props.value, min=props.min, max=props.max, step=props.step, onChange=props.onChange, display=props.display;
   var fill = ((value - min) / (max - min)) * 100;
@@ -93,7 +93,7 @@ function Slider(props) {
     </div>
   );
 }
-
+ 
 function MetricCard(props) {
   var label=props.label, value=props.value, sub=props.sub, accent=props.accent, positive=props.positive;
   var isGood = positive === true;
@@ -115,7 +115,7 @@ function MetricCard(props) {
     </div>
   );
 }
-
+ 
 function Gauge(props) {
   var score=props.score;
   var angle = -135 + (score / 100) * 270;
@@ -151,12 +151,12 @@ function Gauge(props) {
     </div>
   );
 }
-
+ 
 var areaDotColor = n =>
   n.avg5yr >= 10 ? "#4a7059" : n.avg5yr >= 7 ? "#9e7c4a" : n.avg5yr >= 5 ? "#7a8a9a" : "#904a38";
-
-
-
+ 
+ 
+ 
 var AREA_CENTROIDS = {
   "Beato":             [38.725, -9.108],
   "Campo de Ourique":  [38.714, -9.165],
@@ -175,13 +175,13 @@ var AREA_CENTROIDS = {
   "Moita":             [38.638, -9.020],
   "Alcochete":         [38.752, -8.962],
 };
-
+ 
 var CHART_X_MIN = 2, CHART_X_MAX = 15, CHART_Y_MIN = 3, CHART_Y_MAX = 9;
 var CHART_PL = 36, CHART_PR = 308, CHART_PT = 12, CHART_PB = 162;
 var chartCx = v => CHART_PL + (v - CHART_X_MIN) / (CHART_X_MAX - CHART_X_MIN) * (CHART_PR - CHART_PL);
 var chartCy = v => CHART_PB - (v - CHART_Y_MIN) / (CHART_Y_MAX - CHART_Y_MIN) * (CHART_PB - CHART_PT);
 var CHART_X_MID = 8, CHART_Y_MID = 6;
-
+ 
 var LABEL_OFFSETS = {
   "Almada":            [6, -8],
   "Barreiro":          [6, 8],
@@ -200,15 +200,15 @@ var LABEL_OFFSETS = {
   "Avenidas Novas":    [-6, 9],
   "Chiado":            [6, -8],
 };
-
+ 
 function LisbonMap(props) {
   var selectedName = props.selectedName, onSelect = props.onSelect, areas = props.areas || [];
   var mapId = "propiq-leaflet-map";
   var [activeArea, setActiveArea] = useState(null);
-
+ 
   useEffect(function() {
     var destroyed = false;
-
+ 
     function addLeafletCSS() {
       if (!document.getElementById("leaflet-css")) {
         var link = document.createElement("link");
@@ -218,7 +218,7 @@ function LisbonMap(props) {
         document.head.appendChild(link);
       }
     }
-
+ 
     function initMap() {
       if (destroyed) return;
       if (!areas.length) return;
@@ -257,7 +257,7 @@ function LisbonMap(props) {
           "<div style='font-family:Jost,sans-serif;font-size:12px;padding:4px 2px;line-height:1.8;min-width:160px'>" +
           "<b style='font-size:13px'>" + area.name + "</b><br>" +
           "5yr avg: <b>+" + area.avg5yr + "%/yr</b><br>" +
-          "Yield: <b>" + area.yieldPct + "%</b> &nbsp; Price: <b>EUR " + area.price + "/m²</b><br>" +
+          "Yield: <b>" + area.yieldPct + "%</b> &nbsp; Price: <b>EUR " + area.price + "/m2</b><br>" +
           (area.url ? "<a href='" + area.url + "' target='_blank' rel='noopener noreferrer' style='display:inline-block;margin-top:6px;color:#fff;background:#9e7c4a;padding:4px 10px;border-radius:3px;text-decoration:none;font-size:10px;font-weight:500;letter-spacing:0.08em'>VIEW ON IDEALISTA</a>" : "") +
           "</div>",
           { maxWidth: 220 }
@@ -266,7 +266,7 @@ function LisbonMap(props) {
       });
       container._mapInstance = map;
     }
-
+ 
     addLeafletCSS();
     if (window.L) {
       setTimeout(initMap, 50);
@@ -276,7 +276,7 @@ function LisbonMap(props) {
       script.onload = function() { setTimeout(initMap, 50); };
       document.body.appendChild(script);
     }
-
+ 
     return function() {
       destroyed = true;
       var container = document.getElementById(mapId);
@@ -287,7 +287,7 @@ function LisbonMap(props) {
       }
     };
   }, [areas]); // eslint-disable-line react-hooks/exhaustive-deps
-
+ 
   useEffect(function() {
     var container = document.getElementById(mapId);
     if (!container || !container._mapInstance) return;
@@ -304,7 +304,7 @@ function LisbonMap(props) {
       }
     });
   }, [mapId, selectedName]); // eslint-disable-line react-hooks/exhaustive-deps
-
+ 
   return (
     <div>
       <div
@@ -358,7 +358,7 @@ function LisbonMap(props) {
     </div>
   );
 }
-
+ 
 export default function ROICalculator() {
   var [areas, setAreas] = useState([]);
   var [areasLoading, setAreasLoading] = useState(true);
@@ -372,7 +372,7 @@ export default function ROICalculator() {
   var [marketSubTab, setMarketSubTab] = useState("matrix");
   var [ready, setReady] = useState(false);
   var [selectedArea, setSelectedArea] = useState(null);
-
+ 
   useEffect(() => {
     setTimeout(() => setReady(true), 80);
     var link = document.createElement("link");
@@ -384,7 +384,7 @@ export default function ROICalculator() {
       setAreasLoading(false);
     }).catch(function() { setAreasLoading(false); });
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
+ 
   var down = price * (downPct / 100);
   var loan = price - down;
   var mo = rate / 100 / 12;
@@ -396,14 +396,14 @@ export default function ROICalculator() {
   var capRate = ((rent - expenses) * 12 / price) * 100;
   var annualAppreciation = price * (appreciation / 100);
   var roi = ((annualCashFlow + annualAppreciation) / down) * 100;
-
+ 
   var score = Math.min(100, Math.max(0, Math.round(
     (grossYield > 6 ? 30 : grossYield > 4 ? 20 : 10) +
     (cashFlow > 500 ? 30 : cashFlow > 0 ? 20 : cashFlow > -300 ? 5 : 0) +
     (roi > 15 ? 25 : roi > 8 ? 18 : roi > 0 ? 10 : 0) +
     (capRate > 5 ? 15 : capRate > 3 ? 10 : 5)
   )));
-
+ 
   var ltv = ((loan / price) * 100);
   var dscr = (rent * 12) / (mortgage * 12);
   var breakEvenOccupancy = (mortgage + expenses) / rent * 100;
@@ -412,7 +412,7 @@ export default function ROICalculator() {
   var stressMortgage = loan * (stressMo * Math.pow(1 + stressMo, n)) / (Math.pow(1 + stressMo, n) - 1);
   var stressCashFlow = rent - stressMortgage - expenses;
   var vacancyImpact = rent * 0.08 * 12;
-
+ 
   var risks = [
     {
       label: "Leverage (LTV)", value: ltv.toFixed(0) + "%",
@@ -440,7 +440,7 @@ export default function ROICalculator() {
       note: "One month vacancy per year costs " + fmt(vacancyImpact) + ". Maintain a reserve fund to cover this.",
     },
   ];
-
+ 
   var riskCounts = risks.reduce((a, r) => { a[r.score] = (a[r.score] || 0) + 1; return a; }, {});
   var overallRisk = riskCounts["High"] >= 3 ? "High" : (riskCounts["High"] >= 1 || riskCounts["Moderate"] >= 3) ? "Moderate" : "Low";
   var allAreas = areas;
@@ -450,7 +450,7 @@ export default function ROICalculator() {
     { label: "Operating Expenses", value: -expenses, positive: false },
     { label: "Net Cash Flow", value: cashFlow, bold: true, positive: cashFlow >= 0 },
   ];
-
+ 
   return (
     <div style={{
       minHeight: "100vh", background: C.bg, fontFamily: "Jost, sans-serif",
@@ -462,105 +462,72 @@ export default function ROICalculator() {
         transform: ready ? "translateY(0)" : "translateY(16px)",
         transition: "opacity 0.5s ease, transform 0.5s ease",
       }}>
-
-        {areasLoading && (
-          <div style={{ textAlign: "center", padding: "40px 0", color: C.textMuted, fontSize: "11px", letterSpacing: "0.1em" }}>
-            Loading market data...
-          </div>
-        )}
-
+ 
         {/* Header */}
         <div style={{ marginBottom: "32px", borderBottom: "1px solid " + C.divider, paddingBottom: "24px" }}>
-          <div style={{ fontSize: "10px", color: C.textMuted, letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: "10px", fontWeight: "400" }}>
-            PropIQ
-          </div>
-          <h1 style={{ fontSize: "32px", fontFamily: "Cormorant Garamond, serif", fontWeight: "300", color: C.text, margin: "0 0 6px", lineHeight: 1.15, letterSpacing: "-0.01em" }}>
-            Investment Analyzer
-          </h1>
-          <p style={{ fontSize: "12px", color: C.textSub, margin: 0, fontWeight: "300", letterSpacing: "0.03em" }}>
-            Evaluate return on real estate
-          </p>
+          <div style={{ fontSize: "10px", color: C.textMuted, letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: "10px" }}>PropIQ</div>
+          <h1 style={{ fontSize: "32px", fontFamily: "Cormorant Garamond, serif", fontWeight: "300", color: C.text, margin: "0 0 6px", lineHeight: 1.15 }}>Investment Analyzer</h1>
+          <p style={{ fontSize: "12px", color: C.textSub, margin: 0, fontWeight: "300" }}>Evaluate return on real estate</p>
         </div>
-
-        {/* Row 1: Markets tab */}
+ 
+        {/* Row 1: Markets */}
         <div style={{ display: "flex", borderBottom: "1px solid " + C.border, marginBottom: "0" }}>
-          <button onClick={() => setTab("markets")} style={{
-            flex: 1, padding: "10px 0", border: "none", background: "transparent", cursor: "pointer",
-            fontSize: "10px", fontWeight: tab === "markets" ? "500" : "400",
-            textTransform: "uppercase", letterSpacing: "0.12em", fontFamily: "Jost, sans-serif",
-            color: tab === "markets" ? C.accent : C.textSub,
-            borderBottom: tab === "markets" ? "2px solid " + C.accent : "2px solid transparent",
-            marginBottom: "-1px", transition: "all 0.2s",
-          }}>
-            Markets
-          </button>
+          <button onClick={() => setTab("markets")} style={{ flex: 1, padding: "10px 0", border: "none", background: "transparent", cursor: "pointer", fontSize: "10px", fontWeight: tab === "markets" ? "500" : "400", textTransform: "uppercase", letterSpacing: "0.12em", fontFamily: "Jost, sans-serif", color: tab === "markets" ? C.accent : C.textSub, borderBottom: tab === "markets" ? "2px solid " + C.accent : "2px solid transparent", marginBottom: "-1px", transition: "all 0.2s" }}>Markets</button>
         </div>
-
-        {/* Row 2: Deal analysis tabs */}
+ 
+        {/* Row 2: Deal tabs */}
         <div style={{ display: "flex", borderBottom: "1px solid " + C.border, marginBottom: "16px" }}>
-          {["calculator", "breakdown", "projection", "risk"].map(t => (
-            <button key={t} onClick={() => setTab(t)} style={{
-              flex: 1, padding: "10px 0", border: "none", background: "transparent", cursor: "pointer",
-              fontSize: "10px", fontWeight: tab === t ? "500" : "400",
-              textTransform: "uppercase", letterSpacing: "0.12em", fontFamily: "Jost, sans-serif",
-              color: tab === t ? C.accent : C.textSub,
-              borderBottom: tab === t ? "2px solid " + C.accent : "2px solid transparent",
-              marginBottom: "-1px", transition: "all 0.2s",
-            }}>
-              {t}
-            </button>
+          {["calculator","breakdown","projection","risk"].map(t => (
+            <button key={t} onClick={() => setTab(t)} style={{ flex: 1, padding: "10px 0", border: "none", background: "transparent", cursor: "pointer", fontSize: "10px", fontWeight: tab === t ? "500" : "400", textTransform: "uppercase", letterSpacing: "0.12em", fontFamily: "Jost, sans-serif", color: tab === t ? C.accent : C.textSub, borderBottom: tab === t ? "2px solid " + C.accent : "2px solid transparent", marginBottom: "-1px", transition: "all 0.2s" }}>{t}</button>
           ))}
         </div>
-
-        {/* Score Gauge */}
+ 
+        {/* Gauge */}
         {tab !== "markets" && (
           <div style={{ display: "flex", justifyContent: "center", marginBottom: "24px" }}>
             <Gauge score={score} />
           </div>
         )}
-
-        {/* Markets Tab */}
+ 
+        {/* - MARKETS TAB - */}
         {tab === "markets" && (
           <div style={{ marginBottom: "16px" }}>
-            {/* Market sub-tabs */}
+ 
+            {/* Sub-tab nav */}
             <div style={{ display: "flex", borderBottom: "1px solid " + C.border, marginBottom: "16px" }}>
               {[["matrix","Matrix"],["map","Map"],["list","All Areas"]].map((item) => {
                 var key = item[0], label = item[1];
-                return <button key={key} onClick={() => setMarketSubTab(key)} style={{
-                  flex: 1, padding: "9px 0", border: "none", background: "transparent", cursor: "pointer",
-                  fontSize: "9px", fontWeight: marketSubTab === key ? "500" : "400",
-                  textTransform: "uppercase", letterSpacing: "0.12em", fontFamily: "Jost, sans-serif",
-                  color: marketSubTab === key ? C.accent : C.textSub,
-                  borderBottom: marketSubTab === key ? "2px solid " + C.accent : "2px solid transparent",
-                  marginBottom: "-1px", transition: "all 0.2s",
-                }}>
-                  {label}
-                </button>;
+                return (
+                  <button key={key} onClick={() => setMarketSubTab(key)} style={{ flex: 1, padding: "9px 0", border: "none", background: "transparent", cursor: "pointer", fontSize: "9px", fontWeight: marketSubTab === key ? "500" : "400", textTransform: "uppercase", letterSpacing: "0.12em", fontFamily: "Jost, sans-serif", color: marketSubTab === key ? C.accent : C.textSub, borderBottom: marketSubTab === key ? "2px solid " + C.accent : "2px solid transparent", marginBottom: "-1px", transition: "all 0.2s" }}>
+                    {label}
+                  </button>
+                );
               })}
             </div>
-
-            {/* Matrix sub-tab */}
+ 
+            {/* Matrix */}
             {marketSubTab === "matrix" && (
               <div style={{ background: C.surface, border: "1px solid " + C.border, borderRadius: "4px", padding: "16px 18px", marginBottom: "12px" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "14px" }}>
                   <div>
-                    <div style={{ fontSize: "9px", color: C.textMuted, letterSpacing: "0.16em", textTransform: "uppercase", fontWeight: "500", marginBottom: "3px" }}>
-                      Opportunity Matrix
-                    </div>
+                    <div style={{ fontSize: "9px", color: C.textMuted, letterSpacing: "0.16em", textTransform: "uppercase", fontWeight: "500", marginBottom: "3px" }}>Opportunity Matrix</div>
                     <div style={{ fontSize: "10px", color: C.textSub, fontWeight: "300" }}>Gross yield vs. 5yr growth forecast</div>
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", gap: "3px", alignItems: "flex-end" }}>
                     {[["#4a7059","High growth"],["#9e7c4a","Mid growth"],["#7a8a9a","Low growth"],["#904a38","Slow"]].map((pair) => {
-                      var col = pair[0], lbl = pair[1]; return (
-                      <div key={lbl} style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-                        <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: col }} />
-                        <span style={{ fontSize: "8px", color: C.textMuted, fontWeight: "300" }}>{lbl}</span>
-                      </div>
-                    ); })}
+                      var col = pair[0], lbl = pair[1];
+                      return (
+                        <div key={lbl} style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+                          <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: col }} />
+                          <span style={{ fontSize: "8px", color: C.textMuted, fontWeight: "300" }}>{lbl}</span>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
+              </div>
                 {allAreas.length === 0 && (
-                  <div style={{ textAlign: "center", padding: "40px 0", color: C.textMuted, fontSize: "11px", letterSpacing: "0.1em" }}>Loading...</div>
+                  <div style={{ textAlign: "center", padding: "40px 0", color: C.textMuted, fontSize: "11px" }}>Loading...</div>
                 )}
                 <svg viewBox="0 0 320 178" style={{ width: "100%", fontFamily: "Jost, sans-serif", overflow: "visible" }}>
                   <rect x={chartCx(CHART_X_MID)} y={CHART_PT} width={CHART_PR - chartCx(CHART_X_MID)} height={chartCy(CHART_Y_MID) - CHART_PT} fill="#f0f4f0" opacity="0.7" />
@@ -585,10 +552,10 @@ export default function ROICalculator() {
                   ))}
                   <text x={(CHART_PL+CHART_PR)/2} y={CHART_PB+19} textAnchor="middle" fontSize="7.5" fill="#9e7c4a" fontFamily="Jost, sans-serif" letterSpacing="0.1em" fontWeight="500">5-YEAR GROWTH FORECAST</text>
                   <text transform={"rotate(-90,"+(CHART_PL-22)+","+((CHART_PT+CHART_PB)/2)+")"} x={CHART_PL-22} y={(CHART_PT+CHART_PB)/2+2.5} textAnchor="middle" fontSize="7.5" fill="#9e7c4a" fontFamily="Jost, sans-serif" letterSpacing="0.1em" fontWeight="500">GROSS YIELD</text>
-                  <text x={chartCx(CHART_X_MID)+6} y={CHART_PT+8} fontSize="7" fill="#4a7059" fontFamily="Jost, sans-serif" fontWeight="500" letterSpacing="0.08em">SWEET SPOT</text>
-                  <text x={CHART_PL+4} y={CHART_PT+8} fontSize="7" fill="#7a8a9a" fontFamily="Jost, sans-serif" fontWeight="400" letterSpacing="0.08em">INCOME</text>
-                  <text x={chartCx(CHART_X_MID)+6} y={CHART_PB-4} fontSize="7" fill="#9e7c4a" fontFamily="Jost, sans-serif" fontWeight="400" letterSpacing="0.08em">GROWTH</text>
-                  <text x={CHART_PL+4} y={CHART_PB-4} fontSize="7" fill="#a09890" fontFamily="Jost, sans-serif" fontWeight="400" letterSpacing="0.08em">MATURE</text>
+                  <text x={chartCx(CHART_X_MID)+6} y={CHART_PT+8} fontSize="7" fill="#4a7059" fontFamily="Jost, sans-serif" fontWeight="500">SWEET SPOT</text>
+                  <text x={CHART_PL+4} y={CHART_PT+8} fontSize="7" fill="#7a8a9a" fontFamily="Jost, sans-serif">INCOME</text>
+                  <text x={chartCx(CHART_X_MID)+6} y={CHART_PB-4} fontSize="7" fill="#9e7c4a" fontFamily="Jost, sans-serif">GROWTH</text>
+                  <text x={CHART_PL+4} y={CHART_PB-4} fontSize="7" fill="#a09890" fontFamily="Jost, sans-serif">MATURE</text>
                   {allAreas.map(a => {
                     var x = chartCx(a.avg5yr), y = chartCy(a.yieldPct);
                     var col = areaDotColor(a);
@@ -605,65 +572,47 @@ export default function ROICalculator() {
                     );
                   })}
                 </svg>
+                <div style={{ display: "flex", justifyContent: "space-between", marginTop: "8px", paddingTop: "8px", borderTop: "1px solid " + C.divider }}>
+                  <span style={{ fontSize: "8.5px", color: C.textMuted, fontWeight: "300" }}>Tap any dot to apply</span>
+                  <span style={{ fontSize: "8.5px", color: C.textMuted, fontWeight: "300" }}>5yr avg %/yr</span>
+                </div>
+              </div>
+            )}
+ 
+            {/* Map */}
+            {marketSubTab === "map" && (
+              <div style={{ background: C.surface, border: "1px solid " + C.border, borderRadius: "4px", padding: "16px 18px", marginBottom: "12px" }}>
+                <div style={{ fontSize: "9px", color: C.textMuted, letterSpacing: "0.16em", textTransform: "uppercase", fontWeight: "500", marginBottom: "3px" }}>Lisbon Region Map</div>
+                <div style={{ fontSize: "10px", color: C.textSub, fontWeight: "300", marginBottom: "12px" }}>Tap a dot to select an area</div>
+                <div style={{ display: "flex", gap: "12px", marginBottom: "10px", flexWrap: "wrap" }}>
+                  {[["#4a7059",">=10%/yr"],["#9e7c4a","7-10%"],["#7a8a9a","5-7%"],["#904a38","<5%"]].map((pair) => {
+                    var col = pair[0], lbl = pair[1];
+                    return (
+                      <div key={lbl} style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+                        <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: col }} />
+                        <span style={{ fontSize: "7.5px", color: C.textMuted, fontWeight: "300" }}>{lbl}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+                <LisbonMap areas={allAreas} selectedName={selectedArea && selectedArea.name} onSelect={a => { setSelectedArea(a); setAppreciation(parseFloat(a.avg5yr.toFixed(1))); }} />
                 {selectedArea && selectedArea.url && (
-                  <div style={{ marginTop: "10px", padding: "10px 12px", background: C.accentLt, border: "1px solid " + C.borderHov, borderRadius: "3px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <a href={selectedArea.url} target="_blank" rel="noopener noreferrer" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: "10px", padding: "10px 14px", background: C.accentLt, border: "1px solid " + C.borderHov, borderRadius: "3px", textDecoration: "none" }}>
                     <div>
                       <div style={{ fontSize: "12px", fontFamily: "Cormorant Garamond, serif", fontWeight: "500", color: C.text, marginBottom: "2px" }}>{selectedArea.name}</div>
                       <div style={{ fontSize: "9px", color: C.textSub, fontWeight: "300" }}>{"+" + selectedArea.avg5yr + "%/yr  |  Yield " + selectedArea.yieldPct + "%"}</div>
                     </div>
-                    <a href={selectedArea.url} target="_blank" rel="noopener noreferrer"
-                      style={{ fontSize: "9px", color: "#fff", textDecoration: "none", background: C.accent, borderRadius: "2px", padding: "7px 12px", fontWeight: "500", letterSpacing: "0.1em", textTransform: "uppercase", fontFamily: "Jost, sans-serif", whiteSpace: "nowrap", flexShrink: 0 }}>
-                      View on Idealista
-                    </a>
-                  </div>
+                    <span style={{ fontSize: "9px", color: C.accent, fontWeight: "500", letterSpacing: "0.1em", textTransform: "uppercase", fontFamily: "Jost, sans-serif" }}>Idealista &#8599;</span>
+                  </a>
                 )}
                 <div style={{ display: "flex", justifyContent: "space-between", marginTop: "8px", paddingTop: "8px", borderTop: "1px solid " + C.divider }}>
-                  <span style={{ fontSize: "8.5px", color: C.textMuted, fontWeight: "300" }}>Tap any dot to apply to calculator</span>
-                  <span style={{ fontSize: "8.5px", color: C.textMuted, fontWeight: "300" }}>5yr avg %/yr</span>
-                </div>
-            )}
-
-            {/* Map sub-tab */}
-            {marketSubTab === "map" && (
-              <div style={{ background: C.surface, border: "1px solid " + C.border, borderRadius: "4px", padding: "16px 18px", marginBottom: "12px" }}>
-                <div style={{ fontSize: "9px", color: C.textMuted, letterSpacing: "0.16em", textTransform: "uppercase", fontWeight: "500", marginBottom: "3px" }}>
-                  Lisbon Region Map
-                </div>
-                <div style={{ fontSize: "10px", color: C.textSub, fontWeight: "300", marginBottom: "12px" }}>Geographic distribution - tap to select</div>
-                <div style={{ display: "flex", gap: "12px", marginBottom: "10px", flexWrap: "wrap" }}>
-                  {[["#4a7059",">=10%/yr"],["#9e7c4a","7-10%"],["#7a8a9a","5-7%"],["#904a38","<5%"]].map((pair) => {
-                    var col = pair[0], lbl = pair[1]; return (
-                    <div key={lbl} style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-                      <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: col }} />
-                      <span style={{ fontSize: "7.5px", color: C.textMuted, fontWeight: "300" }}>{lbl}</span>
-                    </div>
-                  ); })}
-                </div>
-                <LisbonMap
-                  areas={allAreas}
-                  selectedName={selectedArea && selectedArea.name}
-                  onSelect={a => { setSelectedArea(a); setAppreciation(parseFloat(a.avg5yr.toFixed(1))); }}
-                />
-                {selectedArea && selectedArea.url && (
-                  <div style={{ marginTop: "10px", padding: "12px 14px", background: C.accentLt, border: "1px solid " + C.borderHov, borderRadius: "3px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <div>
-                      <div style={{ fontSize: "12px", fontFamily: "Cormorant Garamond, serif", fontWeight: "500", color: C.text, marginBottom: "2px" }}>{selectedArea.name}</div>
-                      <div style={{ fontSize: "9px", color: C.textSub, fontWeight: "300" }}>{"+" + selectedArea.avg5yr + "%/yr avg  |  Yield " + selectedArea.yieldPct + "%  |  EUR " + selectedArea.price + "/m2"}</div>
-                    </div>
-                    <a href={selectedArea.url} target="_blank" rel="noopener noreferrer"
-                      style={{ fontSize: "9px", color: "#fff", textDecoration: "none", background: C.accent, borderRadius: "2px", padding: "7px 12px", fontWeight: "500", letterSpacing: "0.1em", textTransform: "uppercase", fontFamily: "Jost, sans-serif", whiteSpace: "nowrap", flexShrink: 0 }}>
-                      View on Idealista
-                    </a>
-                  </div>
-                )}
-                <div style={{ display: "flex", justifyContent: "space-between", marginTop: "8px", paddingTop: "8px", borderTop: "1px solid " + C.divider }}>
-                  <span style={{ fontSize: "8.5px", color: C.textMuted, fontWeight: "300" }}>Tap a dot to select</span>
+                  <span style={{ fontSize: "8.5px", color: C.textMuted, fontWeight: "300" }}>Dot colour = 5yr growth tier</span>
                   <span style={{ fontSize: "8.5px", color: C.textMuted, fontWeight: "300" }}>INE / Idealista 2025</span>
                 </div>
               </div>
             )}
-
-            {/* List sub-tab */}
+ 
+            {/* List */}
             {marketSubTab === "list" && (
               <div>
                 <div style={{ background: C.surface, border: "1px solid " + C.border, borderRadius: "4px", padding: "20px 22px", marginBottom: "12px" }}>
@@ -678,8 +627,7 @@ export default function ROICalculator() {
                     var tc = tagC[a.tag] || tagC.Stable;
                     var isSel = selectedArea && selectedArea.name === a.name;
                     return (
-                      <div key={a.name} onClick={() => { setSelectedArea(a); setAppreciation(parseFloat(a.avg5yr.toFixed(1))); }}
-                        style={{ borderBottom: i < allAreas.length-1 ? "1px solid "+C.divider : "none", cursor: "pointer", padding: "14px 0", background: isSel ? C.accentLt : "transparent", borderLeft: isSel ? "2px solid "+C.accent : "2px solid transparent", paddingLeft: isSel ? "8px" : "0", transition: "all 0.2s" }}>
+                      <div key={a.name} onClick={() => { setSelectedArea(a); setAppreciation(parseFloat(a.avg5yr.toFixed(1))); }} style={{ borderBottom: i < allAreas.length-1 ? "1px solid "+C.divider : "none", cursor: "pointer", padding: "14px 0", background: isSel ? C.accentLt : "transparent", borderLeft: isSel ? "2px solid "+C.accent : "2px solid transparent", paddingLeft: isSel ? "8px" : "0", transition: "all 0.2s" }}>
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
                           <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
                             <span style={{ fontSize: "13px", fontFamily: "Cormorant Garamond, serif", fontWeight: "500", color: C.text }}>{a.name}</span>
@@ -697,7 +645,7 @@ export default function ROICalculator() {
                           </div>
                           <span style={{ fontSize: "9px", color: isSel ? C.accent : C.textMuted, fontWeight: isSel ? "500" : "300" }}>{isSel ? "Applied" : "Tap to apply"}</span>
                         </div>
-                        <div style={{ background: C.surfaceAlt, border: "1px solid "+C.border, borderRadius: "3px", padding: "8px 10px" }}>
+                        <div style={{ background: C.surfaceAlt, border: "1px solid "+C.border, borderRadius: "3px", padding: "8px 10px", marginBottom: "8px" }}>
                           <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px" }}>
                             <span style={{ fontSize: "9px", color: C.textMuted, textTransform: "uppercase", letterSpacing: "0.1em", fontWeight: "500" }}>5-Year Outlook</span>
                             <span style={{ fontSize: "11px", fontFamily: "Cormorant Garamond, serif", fontWeight: "600", color: a.avg5yr >= 8 ? C.good : a.avg5yr >= 4 ? C.accent : C.bad }}>{"Avg +" + a.avg5yr + "%/yr"}</span>
@@ -717,16 +665,8 @@ export default function ROICalculator() {
                           </div>
                           <p style={{ fontSize: "9px", color: C.textSub, margin: "4px 0 0", lineHeight: 1.5, fontWeight: "300" }}>{a.outlook}</p>
                         </div>
-                        {a.url && (
-                          <a href={a.url} target="_blank" rel="noopener noreferrer"
-                            onClick={function(e) { e.stopPropagation(); }}
-                            style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "6px", marginTop: "10px", padding: "8px 0", border: "1px solid " + C.borderHov, borderRadius: "3px", textDecoration: "none", background: C.accentLt, transition: "background 0.2s" }}>
-                            <span style={{ fontSize: "9px", color: C.accent, fontWeight: "500", letterSpacing: "0.1em", textTransform: "uppercase", fontFamily: "Jost, sans-serif" }}>View listings on Idealista</span>
-                            <span style={{ fontSize: "10px", color: C.accent }}>&#8599;</span>
-                          </a>
-                        )}
                         {a.catalyst && (
-                          <div style={{ marginTop: "8px" }}>
+                          <div style={{ marginBottom: "8px" }}>
                             <p style={{ fontSize: "10px", color: C.textSub, margin: "0 0 6px", lineHeight: 1.6, fontWeight: "300" }}>{a.catalyst}</p>
                             <div style={{ display: "flex", flexWrap: "wrap", gap: "4px", marginBottom: "6px" }}>
                               {a.signal.map((s, si) => (
@@ -740,10 +680,8 @@ export default function ROICalculator() {
                           </div>
                         )}
                         {a.url && (
-                          <a href={a.url} target="_blank" rel="noopener noreferrer"
-                            onClick={function(e) { e.stopPropagation(); }}
-                            style={{ display: "block", marginTop: "10px", textAlign: "center", fontSize: "9px", color: C.accent, textDecoration: "none", border: "1px solid " + C.borderHov, borderRadius: "2px", padding: "8px", fontWeight: "500", letterSpacing: "0.12em", textTransform: "uppercase", fontFamily: "Jost, sans-serif", background: C.accentLt }}>
-                            View listings on Idealista
+                          <a href={a.url} target="_blank" rel="noopener noreferrer" onClick={function(e){ e.stopPropagation(); }} style={{ display: "block", textAlign: "center", padding: "8px", border: "1px solid " + C.borderHov, borderRadius: "3px", textDecoration: "none", background: C.accentLt, fontSize: "9px", color: C.accent, fontWeight: "500", letterSpacing: "0.1em", textTransform: "uppercase", fontFamily: "Jost, sans-serif" }}>
+                            View listings on Idealista &#8599;
                           </a>
                         )}
                       </div>
@@ -760,14 +698,14 @@ export default function ROICalculator() {
                   ))}
                 </div>
                 <div style={{ background: C.surfaceAlt, border: "1px solid "+C.border, borderRadius: "4px", padding: "12px 16px" }}>
-                  <p style={{ fontSize: "9px", color: C.textMuted, margin: 0, lineHeight: 1.6, fontWeight: "300" }}>Data: INE, Idealista 2025. Emerging area forecasts based on historical Lisbon gentrification wave patterns. Not financial advice.</p>
+                  <p style={{ fontSize: "9px", color: C.textMuted, margin: 0, lineHeight: 1.6, fontWeight: "300" }}>Data: INE, Idealista 2025. Not financial advice.</p>
                 </div>
               </div>
             )}
           </div>
         )}
-
-        {/* Calculator Tab */}
+ 
+        {/* - CALCULATOR TAB - */}
         {tab === "calculator" && (
           <div style={{ background: C.surface, border: "1px solid " + C.border, borderRadius: "4px", padding: "24px 22px", marginBottom: "12px" }}>
             <Slider label="Purchase Price" value={price} min={200000} max={5000000} step={10000} onChange={setPrice} display={"EUR " + Math.round(price/1000) + "k"} />
@@ -779,15 +717,15 @@ export default function ROICalculator() {
               <Slider label="Annual Appreciation" value={appreciation} min={-20} max={35} step={0.1} onChange={v => { setAppreciation(v); setSelectedArea(null); }} display={appreciation + "%/yr"} />
               {selectedArea && (
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: "-12px", marginBottom: "16px", padding: "6px 10px", borderRadius: "3px", background: C.accentLt, border: "1px solid " + C.borderHov }}>
-                  <span style={{ fontSize: "9px", color: C.accent, fontWeight: "500" }}>{"Using " + selectedArea.name + " 5yr avg forecast (+" + selectedArea.avg5yr + "%/yr avg)"}</span>
+                  <span style={{ fontSize: "9px", color: C.accent, fontWeight: "500" }}>{"Using " + selectedArea.name + " 5yr avg (+" + selectedArea.avg5yr + "%/yr)"}</span>
                   <button onClick={() => { setSelectedArea(null); setAppreciation(3); }} style={{ background: "none", border: "none", cursor: "pointer", color: C.accent, fontSize: "12px", padding: "0 0 0 8px" }}>x</button>
                 </div>
               )}
             </div>
           </div>
         )}
-
-        {/* Breakdown Tab */}
+ 
+        {/* - BREAKDOWN TAB - */}
         {tab === "breakdown" && (
           <div style={{ marginBottom: "16px" }}>
             <div style={{ display: "flex", gap: "10px", marginBottom: "10px" }}>
@@ -809,8 +747,8 @@ export default function ROICalculator() {
             </div>
           </div>
         )}
-
-        {/* Projection Tab */}
+ 
+        {/* - PROJECTION TAB - */}
         {tab === "projection" && (
           <div style={{ background: C.surface, border: "1px solid " + C.border, borderRadius: "4px", padding: "20px 22px", marginBottom: "12px" }}>
             <div style={{ fontSize: "9px", color: C.textMuted, letterSpacing: "0.16em", textTransform: "uppercase", fontWeight: "500", marginBottom: "20px" }}>Property Projection</div>
@@ -832,8 +770,8 @@ export default function ROICalculator() {
             })}
           </div>
         )}
-
-        {/* Risk Tab */}
+ 
+        {/* - RISK TAB - */}
         {tab === "risk" && (
           <div style={{ marginBottom: "16px" }}>
             <div style={{ background: C.surface, border: "1px solid " + C.border, borderRadius: "4px", padding: "20px 22px", marginBottom: "12px" }}>
@@ -845,7 +783,7 @@ export default function ROICalculator() {
                 <div style={{ display: "flex", gap: "6px" }}>
                   {["Low","Moderate","High"].map(level => (
                     <div key={level} style={{ textAlign: "center" }}>
-                      <div style={{ width: "28px", height: "28px", borderRadius: "50%", background: overallRisk === level ? (level === "High" ? C.badLt : level === "Moderate" ? C.accentLt : C.goodLt) : C.surfaceAlt, border: "1px solid " + (overallRisk === level ? (level === "High" ? C.bad : level === "Moderate" ? C.accent : C.good) : C.border), display: "flex", alignItems: "center", justifyContent: "center", fontSize: "9px", fontWeight: "500", color: overallRisk === level ? (level === "High" ? C.bad : level === "Moderate" ? C.accent : C.good) : C.textMuted, fontFamily: "Jost, sans-serif", transition: "all 0.3s" }}>{level[0]}</div>
+                      <div style={{ width: "28px", height: "28px", borderRadius: "50%", background: overallRisk === level ? (level === "High" ? C.badLt : level === "Moderate" ? C.accentLt : C.goodLt) : C.surfaceAlt, border: "1px solid " + (overallRisk === level ? (level === "High" ? C.bad : level === "Moderate" ? C.accent : C.good) : C.border), display: "flex", alignItems: "center", justifyContent: "center", fontSize: "9px", fontWeight: "500", color: overallRisk === level ? (level === "High" ? C.bad : level === "Moderate" ? C.accent : C.good) : C.textMuted, transition: "all 0.3s" }}>{level[0]}</div>
                     </div>
                   ))}
                 </div>
@@ -878,19 +816,17 @@ export default function ROICalculator() {
             </div>
           </div>
         )}
-
+ 
         {/* CTA */}
-        <button
-          style={{ width: "100%", padding: "16px", background: C.text, border: "none", borderRadius: "4px", fontSize: "10px", fontWeight: "500", color: C.bg, cursor: "pointer", fontFamily: "Jost, sans-serif", letterSpacing: "0.16em", textTransform: "uppercase", transition: "background 0.2s" }}
+        <button style={{ width: "100%", padding: "16px", background: C.text, border: "none", borderRadius: "4px", fontSize: "10px", fontWeight: "500", color: C.bg, cursor: "pointer", fontFamily: "Jost, sans-serif", letterSpacing: "0.16em", textTransform: "uppercase", transition: "background 0.2s" }}
           onMouseEnter={function(e){ e.target.style.background = C.accentDark; }}
-          onMouseLeave={function(e){ e.target.style.background = C.text; }}
-        >
+          onMouseLeave={function(e){ e.target.style.background = C.text; }}>
           Save This Analysis
         </button>
         <p style={{ textAlign: "center", fontSize: "10px", color: C.textMuted, marginTop: "16px", fontWeight: "300", letterSpacing: "0.02em" }}>
           For informational purposes only. Consult a financial advisor.
         </p>
-
+ 
       </div>
     </div>
   );
